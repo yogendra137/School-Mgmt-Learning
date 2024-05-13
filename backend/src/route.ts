@@ -1,9 +1,9 @@
-// import express from "express";
-// import userRoute from "./user/user.route";
+import express from 'express';
+import userRoute from './user/user.route';
+import { version } from '../../backend/package.json';
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.use("/", userRoute);
+router.use(`/${version}/api/user`, userRoute);
 
-
-// export default router;
+export default router;
