@@ -9,4 +9,8 @@ interface UserModelInterface {
     updatedBy: String
 }
 
-export { UserModelInterface }
+interface AddUserInterface{
+    email:String
+}
+
+export { UserModelInterface ,AddUserInterface }

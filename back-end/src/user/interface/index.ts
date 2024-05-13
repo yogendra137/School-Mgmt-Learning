@@ -1,1 +1,1 @@
-export {  UserModelInterface } from "./userInterface";
+export {  UserModelInterface ,AddUserInterface} from "./userInterface";
