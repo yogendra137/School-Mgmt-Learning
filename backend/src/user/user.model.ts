@@ -1,10 +1,13 @@
 import { Schema, model } from "mongoose";
 import { UserModelInterface } from "./interface";
 
+const userRoles = ['superAdmin', 'projectCoordinatpr','medicalCoordinator','school','medicalPractitioners', ];
+
 const userSchema = new Schema<UserModelInterface>({
     email: { type: String, default: "" },
     mobile: { type: Number, default: null },
     password: { type: String, default: "" },
+    userType:{type:String,enum:userRoles ,default:""},
     isActive: { type: Boolean, default: false },
     createdAt: { type: Date, default: null },
     updatedAt: { type: Date, default: null },

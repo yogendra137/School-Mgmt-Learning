@@ -18,7 +18,7 @@
       "lib": ["es5", "es6", "es7", "es2015", "es2017", "es2019", "es2020", "dom"],
       "composite": true
     },
-    "files": ["./node_modules/@types/node/index.d.ts"],
+    "files": ["./node_modules/@types/node/server.d.ts"],
     "typeRoots": ["./node_modules/@types", "./server"],
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules"]

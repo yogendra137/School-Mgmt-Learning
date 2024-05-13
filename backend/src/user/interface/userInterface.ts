@@ -3,6 +3,7 @@ interface UserModelInterface {
     mobile: Number,
     password: String,
     isActive: Boolean,
+    userType:String,
     createdAt: Date;
     updatedAt: Date;
     createdBy: String;
