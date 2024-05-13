@@ -1,0 +1,1 @@
+export {  UserModelInterface } from "./userInterface";
