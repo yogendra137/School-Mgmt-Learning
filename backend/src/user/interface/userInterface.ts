@@ -8,6 +8,7 @@ interface UserModelInterface {
     updatedAt: Date;
     createdBy: String;
     updatedBy: String;
+    role: 'SA' | 'PC' | 'MC' | 'MP' | 'VO' | 'SC';
 }
 interface AddUserInterface {
     email: String;
