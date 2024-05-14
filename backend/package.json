@@ -6,7 +6,10 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "nodemon src/server.ts",
-        "format": "npx prettier --write ."
+        "format": "npx prettier --write .",
+        "build": "tsc && npm run lint",
+        "lint": "tslint -c tslint.json 'src/**/*.ts'",
+        "tsc": "tsc"
     },
     "author": "",
     "license": "ISC",

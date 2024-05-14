@@ -3,8 +3,8 @@ import userService from './user.service';
 
 const addUser = async (req: Request, res: Response) => {
     try {
-        const data = await userService.addUser(req.body);
-        // res.status(200).json()
+        const {message}= await userService.addUser(req.body)||undefined;
+        res.status(200).json(data)
     } catch (error) {
         console.log('Error--', error);
         // res.status(401).json({ error: error.message })
