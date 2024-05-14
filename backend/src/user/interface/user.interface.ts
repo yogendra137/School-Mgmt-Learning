@@ -4,17 +4,17 @@ interface UserModelInterface {
     mobileNo: string;
     password: string;
     location: object;
-    license: string
+    license: string;
     isActive: boolean;
     profilePic: string;
     haveSkills: string[];
     medicalExpertise: string[];
-    assignBootCamp: string[],
+    assignBootCamp: string[];
     assignMedicalPractitioner: string[];
     schoolId: string;
     userType: string;
     createdBy: string;
-    updatedBy: string
+    updatedBy: string;
 }
 interface AddUserInterface {
     body: {
@@ -27,8 +27,8 @@ interface AddUserInterface {
         createdBy: string;
         updatedBy: string;
         createdAt: Date;
-        updatedAt: Date
-    }
+        updatedAt: Date;
+    };
 }
 
 export { UserModelInterface, AddUserInterface };

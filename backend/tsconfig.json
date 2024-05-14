@@ -4,7 +4,7 @@
         "useDefineForClassFields": true,
         "module": "CommonJS",
         "moduleResolution": "node10",
-        "typeRoots": ["./node_module/@types" ,"./server"],
+        "typeRoots": ["./node_module/@types", "./server"],
         // "allowImportingTsExtensions": true /* Allow imports to include TypeScript file extensions. Requires '--moduleResolution bundler' and either '--noEmit' or '--emitDeclarationOnly' to be set. */,
         "outDir": "dist",
         // "noEmit": true /* Disable emitting files from a compilation. */,
@@ -21,6 +21,6 @@
     },
     "files": ["./node_modules/@types/node/index.d.ts"],
     "typeRoots": ["./node_modules/@types", "./server"],
-    "include": ["src/**/*.ts" ,"package.json"],
+    "include": ["src/**/*.ts", "package.json"],
     "exclude": ["node_modules"]
 }
