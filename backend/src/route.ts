@@ -4,6 +4,6 @@ import { version } from '../../backend/package.json';
 
 const router = express.Router();
 
-router.use(`/${version}/api/user`, userRoute);
+router.use(`/api/${version}/user`, userRoute);
 
 export default router;
