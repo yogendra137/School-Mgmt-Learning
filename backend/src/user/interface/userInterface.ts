@@ -1,4 +1,5 @@
 interface UserModelInterface {
+    _id?: string;
     email: String;
     mobileNo: Number;
     password: String;
@@ -8,7 +9,6 @@ interface UserModelInterface {
     updatedAt: Date;
     createdBy: String;
     updatedBy: String;
-    role: 'SA' | 'PC' | 'MC' | 'MP' | 'VO' | 'SC';
 }
 interface AddUserInterface {
     email: String;
