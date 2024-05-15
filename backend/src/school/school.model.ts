@@ -13,8 +13,8 @@ const schoolSchema = new Schema<SchoolModelInterface>(
             country: { type: String },
         },
         isActive: { type: Boolean },
-        createdBy: { type: String },
-        updatedBy: { type: String },
+        createdBy: { type: String, default: null },
+        updatedBy: { type: String, default: null },
     },
     {
         timestamps: true,

@@ -4,6 +4,7 @@ import { connect } from 'mongoose';
 import dotenv from 'dotenv';
 
 import router from './route';
+import path from 'path';
 
 dotenv.config();
 const app = express();
@@ -11,6 +12,10 @@ const app = express();
 const url: string | undefined = process.env.DB_URL || '';
 
 app.use(express.json());
+
+const staticPath = path.join(__dirname);
+app.use(express.static(path.join(__dirname)));
+app.use(express.static(staticPath));
 
 const connectOptions = {
     useNewUrlParser: true,

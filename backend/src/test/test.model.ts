@@ -8,8 +8,8 @@ const testSchema = new Schema<TestModelInterface>(
         Description: { type: String },
         duration: { type: String },
         isActive: { type: Boolean },
-        createdBy: { type: String },
-        updatedBy: { type: String },
+        createdBy: { type: String, default: null },
+        updatedBy: { type: String, default: null },
     },
     {
         timestamps: true,

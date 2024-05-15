@@ -1,7 +1,23 @@
 interface ResourceModelInterface {
-    fileName: string;
+    fileName: string[];
+    title: string;
+    description: string;
+    tags: string[];
     isActive: boolean;
     createdBy: string;
     updatedBy: string;
 }
-export { ResourceModelInterface };
+interface AddResourceInterface {
+    body: {
+        // fileName: string[];
+        title: string;
+        description: string;
+        tags: string[];
+        createdBy: string;
+        updatedBy: string;
+    };
+    params: {
+        id: string;
+    };
+}
+export { ResourceModelInterface, AddResourceInterface };

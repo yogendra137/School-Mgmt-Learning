@@ -5,6 +5,8 @@ const message = {
     fetchSchoolListSuccess: 'Fetch school list successfully!',
     testAddedSuccess: 'Test added successfully!',
     fetchTestList: 'Fetch test list successfully!',
+    resourceAddedSuccess: 'Resource added successfully!',
+    updateResourceSuccess: 'Resource updated successfully!',
 };
 
 export { message };

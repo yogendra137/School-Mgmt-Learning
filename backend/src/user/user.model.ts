@@ -28,9 +28,9 @@ const userSchema = new Schema<UserModelInterface>(
         medicalExpertise: { type: [String], default: [] },
         assignBootCamp: { type: [String], default: null }, // assign to MC
         assignMedicalPractitioner: { type: [String], default: null }, // assign to MP to MC
-        isActive: { type: Boolean, default: false },
-        createdBy: { type: String },
-        updatedBy: { type: String },
+        isActive: { type: Boolean },
+        createdBy: { type: String, default: null },
+        updatedBy: { type: String, default: null },
     },
     {
         timestamps: true,
