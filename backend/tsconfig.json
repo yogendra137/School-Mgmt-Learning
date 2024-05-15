@@ -1,26 +1,10 @@
 {
     "compilerOptions": {
-        "target": "es6",
-        "useDefineForClassFields": true,
-        "module": "CommonJS",
-        "moduleResolution": "node10",
-        "typeRoots": ["./node_module/@types" ,"./server"],
-        // "allowImportingTsExtensions": true /* Allow imports to include TypeScript file extensions. Requires '--moduleResolution bundler' and either '--noEmit' or '--emitDeclarationOnly' to be set. */,
-        "outDir": "dist",
-        // "noEmit": true /* Disable emitting files from a compilation. */,
-        "sourceMap": false,
         "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "strict": true /* Enable all strict type-checking options. */,
-        "noImplicitAny": true,
-        "declaration": true,
-        "skipLibCheck": true,
-        "lib": ["es5", "es6", "es7", "es2015", "es2017", "es2019", "es2020", "dom"],
-        "composite": true,
-        "resolveJsonModule": true
-    },
-    "files": ["./node_modules/@types/node/index.d.ts"],
-    "typeRoots": ["./node_modules/@types", "./server"],
-    "include": ["src/**/*.ts" ,"package.json"],
-    "exclude": ["node_modules"]
+        "resolveJsonModule": true,
+        "target": "es2021",
+        "module": "commonjs",
+        "outDir": "./dist",
+        "strict": true
+    }
 }
