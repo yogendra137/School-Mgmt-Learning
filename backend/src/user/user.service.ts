@@ -30,7 +30,6 @@ const addUser = async (userData: any) => {
             userType,
             createdBy,
             updatedBy,
-            
         });
         return {
             message: message.userAddedSuccess,

@@ -1,5 +1,5 @@
 interface UserModelInterface {
-    _id?:string;
+    _id?: string;
     name: string;
     email: string;
     mobileNo: string;
