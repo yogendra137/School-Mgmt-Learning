@@ -10,7 +10,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
         const result = await authService.login(email, password);
-        if (result?.success) res.status(HTTPStatus.OK).json({ success: true, token: result?.token });
+        if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         res.status(HTTPStatus.NOT_FOUND).json({ success: false, message: result?.message });
     } catch (error) {
         next(error);
@@ -21,7 +21,7 @@ const forgotPassword = async (req: Request, res: Response, next: NextFunction) =
     try {
         const { email } = req.body;
         const result = await authService.forgotPassword(email);
-        if (result?.success) res.status(HTTPStatus.OK).json({ ...result });
+        if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         res.status(HTTPStatus.NOT_FOUND).json({ ...result });
     } catch (error) {
         next(error);
@@ -34,7 +34,7 @@ const resetPassword = async (req: Request, res: Response, next: NextFunction) =>
         const { email, token, password } = req.body;
         // authService.markTokenAsInvalid(token);
         const result = await authService.resetPassword(email, password);
-        if (result?.success) res.status(HTTPStatus.OK).json({ ...result });
+        if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         res.status(HTTPStatus.NOT_FOUND).json({ ...result });
     } catch (error) {
         next(error);
@@ -45,7 +45,7 @@ const verifyForgotPasswordToken = async (req: Request, res: Response, next: Next
     try {
         const { token }: { token: string } = req.query as { token: string };
         const result = await authService.verifyForgotPasswordToken(token);
-        if (result?.success) res.status(HTTPStatus.OK).json({ ...result });
+        if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         res.status(HTTPStatus.NOT_FOUND).json({ ...result });
     } catch (error) {
         next(error);

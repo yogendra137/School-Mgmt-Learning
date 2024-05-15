@@ -15,7 +15,7 @@ const login = async (email: string, password: string) => {
                 { _id: user._id, email: user.email, userType: user.userType },
                 process.env.JWT_PRIVATE_KEY || '',
             );
-            return { success: true, token };
+            return { success: true, token, message: messages.LOGIN_SUCCESSFULLY };
         }
         return {
             success: false,

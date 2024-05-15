@@ -9,4 +9,5 @@ export default {
     INTERNAL_SERVER_ERROR: 'Internal Server Error',
     TOGGLE_STATUS: 'User toggle successfully',
     SUPER_ADMIN_NOT_DEACTIVATE: "You can't deactivate the super admin",
+    LOGIN_SUCCESSFULLY: 'Login successful',
 };
