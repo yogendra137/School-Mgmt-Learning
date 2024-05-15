@@ -1,5 +1,5 @@
 interface UserModelInterface {
-    _id?:string;
+    _id?: string;
     name: string;
     email: string;
     mobileNo: string;
@@ -16,6 +16,7 @@ interface UserModelInterface {
     userType: string;
     createdBy: string;
     updatedBy: string;
+    isDeleted: boolean;
 }
 interface AddUserInterface {
     body: {

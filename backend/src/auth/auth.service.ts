@@ -22,7 +22,7 @@ const login = async (email: string, password: string) => {
             message: messages.USER_NOT_FOUND,
         };
     } catch (error) {
-        console.log('error', error);
+        return { success: false, message: (error as Error).message };
     }
 };
 
@@ -39,7 +39,7 @@ const forgotPassword = async (email: string) => {
             message: messages.USER_NOT_FOUND,
         };
     } catch (error) {
-        console.log('error', error);
+        return { success: false, message: (error as Error).message };
     }
 };
 
@@ -61,7 +61,7 @@ const changePassword = async (email: string, oldPassword: string, newPassword: s
             message: messages.USER_NOT_FOUND,
         };
     } catch (error) {
-        console.log('error', error);
+        return { success: false, message: (error as Error).message };
     }
 };
 
@@ -86,7 +86,7 @@ const resetPassword = async (email: string, password: string) => {
         }
         return { success: false, message: messages.USER_NOT_FOUND };
     } catch (error) {
-        console.log('error', error);
+        return { success: false, message: (error as Error).message };
     }
 };
 

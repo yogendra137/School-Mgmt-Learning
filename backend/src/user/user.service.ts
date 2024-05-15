@@ -1,4 +1,5 @@
 import { encryptPassword, message } from '../common';
+import messages from '../config/messages';
 import { AddUserInterface } from './interface';
 import userModel from './user.model';
 /**
@@ -30,7 +31,6 @@ const addUser = async (userData: any) => {
             userType,
             createdBy,
             updatedBy,
-            
         });
         return {
             message: message.userAddedSuccess,
@@ -42,6 +42,43 @@ const addUser = async (userData: any) => {
     }
 };
 
+const deleteUser = async (id: string) => {
+    try {
+        const user = await userModel.findOne({ _id: id });
+        if (!user?.isDeleted) {
+            const result = await userModel.updateOne({ _id: id }, { $set: { isDeleted: true } });
+            if (result.modifiedCount)
+                return {
+                    message: messages.USER_DELETED,
+                    success: true,
+                };
+        }
+
+        return {
+            message: messages.USER_NOT_FOUND,
+            success: false,
+        };
+    } catch (error) {
+        return { success: false, message: (error as Error).message };
+    }
+};
+
+const toggleUserStatus = async (id: string) => {
+    try {
+        const user = await userModel.findOne({ _id: id });
+        if (user?.userType === 'SA') return { success: false, message: messages.SUPER_ADMIN_NOT_DEACTIVATE };
+        await userModel.updateOne({ _id: id }, { $set: { isActive: !Boolean(user?.isActive) } });
+        return {
+            success: true,
+            message: messages.TOGGLE_STATUS.replace('toggle', Boolean(user?.isActive) ? 'deactivated' : 'activated'),
+        };
+    } catch (error) {
+        return { success: false, message: (error as Error).message };
+    }
+};
+
 export default {
     addUser,
+    toggleUserStatus,
+    deleteUser,
 };

@@ -4,6 +4,7 @@ import { connect } from 'mongoose';
 import dotenv from 'dotenv';
 
 import router from './route';
+import errorHandler from './middleware/errorHandler';
 
 dotenv.config();
 const app = express();
@@ -26,6 +27,9 @@ connect(url, connectOptions)
     });
 
 app.use('/', router);
+
+// Global error handler middleware
+app.use(errorHandler);
 
 const server = http.createServer(app);
 

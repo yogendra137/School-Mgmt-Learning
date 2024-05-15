@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import userService from './user.service';
+import HTTPStatus from '../config/statusCode';
 
 const addUser = async (req: Request, res: Response) => {
     try {
@@ -9,8 +10,31 @@ const addUser = async (req: Request, res: Response) => {
             res.status(200).json({ message, status });
         }
     } catch (error: any) {
-        console.log('Error--', error);
         res.status(401).json({ error: error.message });
     }
 };
-export default { addUser };
+
+const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const result = await userService.deleteUser(id);
+        console.log('result', result);
+        if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
+        res.status(HTTPStatus.NOT_FOUND).json({ ...result });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const toggleUserStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const result = await userService.toggleUserStatus(id);
+        if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
+        res.status(HTTPStatus.NOT_FOUND).json({ ...result });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export default { addUser, toggleUserStatus, deleteUser };
