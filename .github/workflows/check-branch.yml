@@ -1,0 +1,18 @@
+name: Check Branch Name
+
+on: [push]
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Ensure no direct pushes to development
+      run: |
+        if [ "${GITHUB_REF}" == "refs/heads/development" ]; then
+          echo "Direct pushes to the development branch are not allowed."
+          exit 1
+        fi
