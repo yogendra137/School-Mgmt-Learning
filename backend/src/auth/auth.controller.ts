@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import authService from './auth.service';
 import HTTPStatus from '../config/statusCode';
+import { decipher } from '../common';
 
 interface NewRequest extends Request {
     user?: any;
@@ -9,7 +10,9 @@ interface NewRequest extends Request {
 const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
-        const result = await authService.login(email, password);
+        const decodedPassword = decipher()(password);
+
+        const result = await authService.login(email, decodedPassword);
         if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         res.status(HTTPStatus.NOT_FOUND).json({ success: false, message: result?.message });
     } catch (error) {

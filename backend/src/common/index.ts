@@ -1,2 +1,2 @@
 export { message } from './messages';
-export { encryptPassword } from './password';
+export { encryptPassword, decipher } from './password';
