@@ -2,21 +2,21 @@ import styles from './styles.module.scss';
 
 import React, { ChangeEvent } from 'react';
 
-interface InputProps {
+interface ButtonProps {
   type: string;
   placeholder: string;
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Input: React.FC<InputProps> = ({ type, value, onChange, placeholder }) => {
+const Button: React.FC<ButtonProps> = ({ type, value }) => {
   return (
     <div className={styles.input}>
-    <input
+    <button
       type={type}
       value={value}
-      onChange={onChange}
-      placeholder={type}
+      
+     
     />
     </div>
   );

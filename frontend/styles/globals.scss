@@ -18,4 +18,47 @@ body {
     font-family: $font-family-default;
     color: $black;
   }
+
+  
+  .form-check-input:focus {
+    box-shadow: none;
+  }
+
+  p,
+  a {
+    font-family: $font-family-default;
+    margin: 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  [disabled],
+  .form-check-input:disabled {
+    cursor: not-allowed;
+    pointer-events: all;
+  }
+
+  .disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }
