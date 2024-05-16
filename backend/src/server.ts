@@ -2,8 +2,8 @@ import express from 'express';
 import http from 'http';
 import { connect } from 'mongoose';
 import dotenv from 'dotenv';
-
 import router from './route';
+import log from './utils/logger';
 import errorHandler from './middleware/errorHandler';
 
 dotenv.config();
@@ -20,10 +20,10 @@ const connectOptions = {
 
 connect(url, connectOptions)
     .then(() => {
-        // console.log('Database connected successfully.');
+        log('Database connected successfully.');
     })
     .catch((err: any) => {
-        // console.log('Error in database connection - ', err.message);
+        log('Error in database connection - ', err.message);
     });
 
 app.use('/', router);
@@ -36,7 +36,7 @@ const server = http.createServer(app);
 const port = process.env.PORT || 8000;
 
 server.listen(port, () => {
-    console.log(`Server is running on port ${port}!`);
+    log(`Server is running on port ${port}!`);
 });
 
 export default app;
