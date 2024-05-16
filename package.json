@@ -1,0 +1,15 @@
+{
+  "name": "icu2-foundation",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "husky": "^8.0.0"
+  }
+}
