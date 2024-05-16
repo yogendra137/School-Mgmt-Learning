@@ -2,6 +2,8 @@
   "name": "icu2-foundation",
   "version": "1.0.0",
   "scripts": {
+    "start:backend": "npm --prefix ./backend start",
+    "start": "npm-run-all --parallel start:backend",
     "prepare": "husky install"
   },
   "author": "",
@@ -10,6 +12,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "husky": "^8.0.0"
+    "husky": "^8.0.0",
+    "npm-run-all": "^4.1.5"
   }
 }
