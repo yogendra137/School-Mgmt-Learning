@@ -4,7 +4,7 @@ import { SchoolModelInterface } from './interface';
 const schoolSchema = new Schema<SchoolModelInterface>(
     {
         schoolName: { type: String },
-        contactPerson: { type: String }, // school Representative name 
+        contactPerson: { type: String }, // school Representative name
         contactEmail: { type: String },
         contactNumber: { type: String },
         location: {

@@ -54,7 +54,7 @@ const changePassword = async (email: string, oldPassword: string, newPassword: s
             // await user.save();
             await UserModel.updateOne({ email }, { $set: { password: user.password } });
             const token = jwt.sign({ email: user.email, userType: user.userType }, process.env.JWT_PRIVATE_KEY || '');
-            return { success: true, token: token, message: messages.PASSWORD_UPDATED };
+            return { success: true, token, message: messages.PASSWORD_UPDATED };
         }
         return {
             success: false,
@@ -81,7 +81,7 @@ const resetPassword = async (email: string, password: string) => {
         if (user) {
             user.password = bcrypt.hashSync(password, 10);
             // await user.save();
-            await UserModel.updateOne({ email: email }, { $set: { password: user.password } });
+            await UserModel.updateOne({ email }, { $set: { password: user.password } });
             return { success: true, email, password, message: messages.PASSWORD_UPDATED };
         }
         return { success: false, message: messages.USER_NOT_FOUND };
@@ -90,7 +90,9 @@ const resetPassword = async (email: string, password: string) => {
     }
 };
 
-const markTokenAsInvalid = (token: string) => {};
+const markTokenAsInvalid = (token: string) => {
+    console.log('calling function');
+};
 
 export default {
     login,
