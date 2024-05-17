@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import authService from './auth.service';
 import HTTPStatus from '../config/statusCode';
 import { decipher } from '../common';
-import tokenHistoryModel from './tokenHistory.model';
 interface NewRequest extends Request {
     user?: any;
 }
