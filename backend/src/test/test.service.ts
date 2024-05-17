@@ -23,7 +23,7 @@ const addTest = async (userData: any) => {
         });
         return {
             message: message.testAddedSuccess,
-            status: true,
+            status: 200,
         };
     } catch (error) {
         console.log('error', error);
@@ -37,10 +37,10 @@ const addTest = async (userData: any) => {
 const testList = async () => {
     try {
         const list = await testModel.find({}, { testName: 1, skills: 1, duration: 1 });
-        console.log('list', list);
+        // console.log('list', list);
         return {
             message: message.fetchTestList,
-            status: true,
+            status: 200,
             list,
         };
     } catch (error) {

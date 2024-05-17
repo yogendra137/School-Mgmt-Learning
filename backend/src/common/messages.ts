@@ -7,6 +7,10 @@ const message = {
     fetchTestList: 'Fetch test list successfully!',
     resourceAddedSuccess: 'Resource added successfully!',
     updateResourceSuccess: 'Resource updated successfully!',
+    fetchResourceSuccess: 'Resource fetch successfully!',
+    resourceDeleteSuccess: 'Resource deleted successfully!',
+    fetchResourceListSuccess: 'Fetch list of resource!',
+    changeResourcesStatus: 'Resource status updated successfully!',
 };
 
 export { message };

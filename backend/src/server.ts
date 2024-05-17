@@ -24,10 +24,10 @@ const connectOptions = {
 
 connect(url, connectOptions)
     .then(() => {
-        console.log('Database connected successfully.');
+        // console.log('Database connected successfully.');
     })
     .catch((err: any) => {
-        console.log('Error in database connection - ', err.message);
+        // console.log('Error in database connection - ', err.message);
     });
 
 app.use('/', router);

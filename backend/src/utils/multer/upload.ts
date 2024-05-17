@@ -6,12 +6,13 @@ const srcPath = path.resolve(__dirname, '../..');
 
 // Construct the upload path relative to the 'src' directory
 const uploadPath = path.join(srcPath, 'public/resources');
+const randomGenerate = Math.random().toString(36).slice(-5);
 
 const storage = multer.diskStorage({
     destination: uploadPath,
-    filename: function (req, file, cb) {
+    filename (req, file, cb) {
         try {
-            cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
+            cb(null, file.fieldname + '_' + Date.now() + randomGenerate + path.extname(file.originalname));
         } catch (err) {
             console.log('error');
         }

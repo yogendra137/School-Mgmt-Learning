@@ -3,10 +3,11 @@ import { ResourceModelInterface } from './interface';
 
 const resourceSchema = new Schema<ResourceModelInterface>(
     {
-        fileName: { type: [String], default: null },
+        fileName: { type: String, default: null },
         title: { type: String, default: '' },
         description: { type: String, default: '' },
         tags: { type: [String], default: null },
+        isDeleted: { type: Boolean, default: false },
         isActive: { type: Boolean },
         createdBy: { type: String, default: null },
         updatedBy: { type: String, default: null },

@@ -38,7 +38,7 @@ const addSchool = async (schoolData: any) => {
         });
         return {
             message: message.schoolAddSuccess,
-            status: true,
+            status: 200,
         };
     } catch (error) {
         console.log('error', error);

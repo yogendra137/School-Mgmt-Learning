@@ -1,15 +1,16 @@
 interface ResourceModelInterface {
-    fileName: string[];
+    fileName: string;
     title: string;
     description: string;
     tags: string[];
+    isDeleted: boolean;
     isActive: boolean;
     createdBy: string;
     updatedBy: string;
 }
 interface AddResourceInterface {
     body: {
-        // fileName: string[];
+        filename: string;
         title: string;
         description: string;
         tags: string[];
@@ -19,5 +20,7 @@ interface AddResourceInterface {
     params: {
         id: string;
     };
+    files: any;
+    query: { status: string };
 }
 export { ResourceModelInterface, AddResourceInterface };
