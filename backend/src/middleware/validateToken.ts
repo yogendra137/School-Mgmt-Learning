@@ -16,7 +16,7 @@ const authenticateJWT = (req: NewRequest, res: Response, next: NextFunction) => 
 
         jwt.verify(token, process.env.JWT_PRIVATE_KEY || '', async (err, user) => {
             if (err) {
-                return res.sendStatus(HTTPStatus.FORBIDDEN);
+                return res.sendStatus(HTTPStatus.INVALID_TOKEN);
             }
 
             if (typeof user === 'object' && user !== null) {
