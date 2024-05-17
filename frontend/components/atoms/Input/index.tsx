@@ -4,11 +4,11 @@ import styles from './styles.module.scss';
 import React, { ChangeEvent } from 'react';
 
 interface InputProps {
-  label: string;
-  type: string;
-  placeholder: string;
-  value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
+  type?: string;
+  placeholder?: string;
+  value?: string;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -26,7 +26,6 @@ const Input: React.FC<InputProps> = ({
         value={value}
         placeholder={placeholder}
         onChange={onChange}
-        
       />
     </Form.Group>
   );

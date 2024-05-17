@@ -52,7 +52,7 @@ export const Login = () => {
                 type='submit'
                 className='btn btn-primary'
                 value='Login'
-              
+                variant='primary'
               >
                 Login
               </Button>

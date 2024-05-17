@@ -6,11 +6,23 @@ interface ButtonComponentProps {
   label: string;
   value: string;
   className: string;
+  variant: string;
 }
 
-const Button: React.FC<ButtonComponentProps> = ({ type, onClick, label, value, className }) => {
+const Button: React.FC<ButtonComponentProps> = ({
+  type,
+  onClick,
+  label,
+  value,
+  className,
+  variant = 'primary',
+}) => {
   return (
-    <button className={styles.button}  type={type} onClick={onClick}>
+    <button
+      className={`${variant} ${styles.button}`}
+      type={type}
+      onClick={onClick}
+    >
       {value}
     </button>
   );
