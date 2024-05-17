@@ -64,9 +64,11 @@ const changePassword = async (email: string, oldPassword: string, newPassword: s
 
 const verifyForgotPasswordToken = async (token: string) => {
     try {
+        const result = await TokenHistoryModel.findOne({ token });
+        if (result && result.isUtilized) return { success: false, message: messages.TOKEN_UTILIZED };
         const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY ?? '');
         if (!decoded) return { success: false, message: messages.TOKEN_EXPIRED };
-        return { success: true };
+        return { success: true, message: messages.TOKEN_VERIFIED };
     } catch (error) {
         return { success: false, error, message: (error as Error).message };
     }

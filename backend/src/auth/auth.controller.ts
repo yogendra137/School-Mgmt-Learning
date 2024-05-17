@@ -49,8 +49,8 @@ const resetPassword = async (req: Request, res: Response, next: NextFunction) =>
 
 const verifyForgotPasswordToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { token }: { token: string } = req.query as { token: string };
-        const result = await authService.verifyForgotPasswordToken(token);
+        const token = req.headers['x-icu-fp-token'];
+        const result = await authService.verifyForgotPasswordToken(token as string);
         if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         else if (result?.error) throw new Error(result.message);
         res.status(HTTPStatus.INVALID_TOKEN).json({ ...result });

@@ -4,6 +4,8 @@ import { TokenModelInterface } from './interface';
 const tokenSchema = new Schema<TokenModelInterface>(
     {
         token: { type: String },
+        // userId: { type: Schema.Types.ObjectId, ref: 'user' },
+        isUtilized: { type: Boolean, default: false },
     },
     {
         timestamps: true,
