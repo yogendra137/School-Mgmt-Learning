@@ -16,6 +16,7 @@ interface UserModelInterface {
     userType: string;
     createdBy: string;
     updatedBy: string;
+    isDeleted: boolean;
 }
 interface AddUserInterface {
     body: {
