@@ -10,4 +10,6 @@ export default {
     TOGGLE_STATUS: 'User toggle successfully',
     SUPER_ADMIN_NOT_DEACTIVATE: "You can't deactivate the super admin",
     LOGIN_SUCCESSFULLY: 'Login successful',
+    TOKEN_VERIFIED: 'Token verified successfully',
+    TOKEN_UTILIZED: 'Token already utilized',
 };

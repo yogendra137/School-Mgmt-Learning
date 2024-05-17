@@ -45,6 +45,9 @@ const addUser = async (userData: any) => {
 const deleteUser = async (id: string) => {
     try {
         const user = await userModel.findOne({ _id: id });
+        if (!user) return { success: false, message: messages.USER_NOT_FOUND };
+        if (user?.userType === 'SA') return { success: false, message: messages.SUPER_ADMIN_NOT_DEACTIVATE };
+
         if (!user?.isDeleted) {
             const result = await userModel.updateOne({ _id: id }, { $set: { isDeleted: true } });
             if (result.modifiedCount)
@@ -63,14 +66,15 @@ const deleteUser = async (id: string) => {
     }
 };
 
-const toggleUserStatus = async (id: string) => {
+const toggleUserStatus = async (id: string, status: boolean) => {
     try {
-        const user = await userModel.findOne({ _id: id });
+        const user = await userModel.findOne({ _id: id, isDeleted: false });
+        if (!user) return { success: false, message: messages.USER_NOT_FOUND };
         if (user?.userType === 'SA') return { success: false, message: messages.SUPER_ADMIN_NOT_DEACTIVATE };
-        await userModel.updateOne({ _id: id }, { $set: { isActive: !Boolean(user?.isActive) } });
+        await userModel.updateOne({ _id: id }, { $set: { isActive: status } });
         return {
             success: true,
-            message: messages.TOGGLE_STATUS.replace('toggle', Boolean(user?.isActive) ? 'deactivated' : 'activated'),
+            message: messages.TOGGLE_STATUS.replace('toggle', status ? 'deactivated' : 'activated'),
         };
     } catch (error) {
         return { success: false, message: (error as Error).message };

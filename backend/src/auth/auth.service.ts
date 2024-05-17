@@ -4,16 +4,16 @@ import jwt from 'jsonwebtoken';
 import UserModel from '../user/user.model';
 import { UserModelInterface } from '../user/interface';
 import messages from '../config/messages';
-
+import TokenHistoryModel from './tokenHistory.model';
 const login = async (email: string, password: string) => {
     try {
         const user: UserModelInterface | null = await UserModel.findOne({ email });
         if (user) {
-            if (!bcrypt.compareSync(password, user.password as string))
+            if (!bcrypt.compareSync(password, user.password))
                 return { success: false, message: messages.PASSWORD_INVALID };
             const token = jwt.sign(
                 { _id: user._id, email: user.email, userType: user.userType },
-                process.env.JWT_PRIVATE_KEY || '',
+                process.env.JWT_PRIVATE_KEY ?? '',
             );
             return { success: true, token, message: messages.LOGIN_SUCCESSFULLY };
         }
@@ -22,7 +22,7 @@ const login = async (email: string, password: string) => {
             message: messages.USER_NOT_FOUND,
         };
     } catch (error) {
-        return { success: false, message: (error as Error).message };
+        return { success: false, error, message: (error as Error).message };
     }
 };
 
@@ -30,8 +30,7 @@ const forgotPassword = async (email: string) => {
     try {
         const user = await UserModel.findOne({ email });
         if (user) {
-            const token = jwt.sign({ email: user.email, userType: user.userType }, process.env.JWT_PRIVATE_KEY || '');
-            // sendMail(email, templateId, content = { token });
+            const token = jwt.sign({ email: user.email, userType: user.userType }, process.env.JWT_PRIVATE_KEY ?? '');
             return { success: true, message: messages.EMAIL_SENT, token };
         }
         return {
@@ -39,7 +38,7 @@ const forgotPassword = async (email: string) => {
             message: messages.USER_NOT_FOUND,
         };
     } catch (error) {
-        return { success: false, message: (error as Error).message };
+        return { success: false, error, message: (error as Error).message };
     }
 };
 
@@ -47,31 +46,31 @@ const changePassword = async (email: string, oldPassword: string, newPassword: s
     try {
         const user = await UserModel.findOne({ email });
         if (user) {
-            if (!bcrypt.compareSync(oldPassword, user.password as string))
+            if (!bcrypt.compareSync(oldPassword, user.password))
                 return { success: false, message: messages.PASSWORD_INVALID };
 
             user.password = bcrypt.hashSync(newPassword, 10);
-            // await user.save();
             await UserModel.updateOne({ email }, { $set: { password: user.password } });
-            const token = jwt.sign({ email: user.email, userType: user.userType }, process.env.JWT_PRIVATE_KEY || '');
-            return { success: true, token, message: messages.PASSWORD_UPDATED };
+            return { success: true, message: messages.PASSWORD_UPDATED };
         }
         return {
             success: false,
             message: messages.USER_NOT_FOUND,
         };
     } catch (error) {
-        return { success: false, message: (error as Error).message };
+        return { success: false, error, message: (error as Error).message };
     }
 };
 
 const verifyForgotPasswordToken = async (token: string) => {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY || '');
+        const result = await TokenHistoryModel.findOne({ token });
+        if (result && result.isUtilized) return { success: false, message: messages.TOKEN_UTILIZED };
+        const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY ?? '');
         if (!decoded) return { success: false, message: messages.TOKEN_EXPIRED };
-        return { success: true };
+        return { success: true, message: messages.TOKEN_VERIFIED };
     } catch (error) {
-        return { success: false, message: (error as Error).message };
+        return { success: false, error, message: (error as Error).message };
     }
 };
 
@@ -80,18 +79,26 @@ const resetPassword = async (email: string, password: string) => {
         const user = await UserModel.findOne({ email });
         if (user) {
             user.password = bcrypt.hashSync(password, 10);
-            // await user.save();
             await UserModel.updateOne({ email }, { $set: { password: user.password } });
-            return { success: true, email, password, message: messages.PASSWORD_UPDATED };
+            const token = jwt.sign(
+                { email: user.email, userType: user.userType, _id: user._id },
+                process.env.JWT_PRIVATE_KEY ?? '',
+            );
+
+            return { success: true, token, message: messages.PASSWORD_UPDATED };
         }
         return { success: false, message: messages.USER_NOT_FOUND };
     } catch (error) {
-        return { success: false, message: (error as Error).message };
+        return { success: false, error, message: (error as Error).message };
     }
 };
 
-const markTokenAsInvalid = (token: string) => {
-    console.log('calling function');
+const markTokenAsInvalid = async (token: string) => {
+    try {
+        await TokenHistoryModel.create({ token });
+    } catch (error) {
+        return { success: false, error, message: (error as Error).message };
+    }
 };
 
 export default {
