@@ -1,9 +1,9 @@
-import Input from '@/components/atoms/Input';
+import { Login } from '@/components/organisms/login';
 
 export default function Home() {
   return (
     <>
-      <Input type='text' placeholder="test by me"  />
+      <Login></Login>
     </>
   );
 }

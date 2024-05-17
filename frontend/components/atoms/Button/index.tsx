@@ -1,25 +1,19 @@
 import styles from './styles.module.scss';
 
-import React, { ChangeEvent } from 'react';
-
-interface ButtonProps {
-  type: string;
-  placeholder: string;
+interface ButtonComponentProps {
+  type: 'submit' | 'reset' | 'button';
+  onClick: () => void;
+  label: string;
   value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  className: string;
 }
 
-const Button: React.FC<ButtonProps> = ({ type, value }) => {
+const Button: React.FC<ButtonComponentProps> = ({ type, onClick, label, value, className }) => {
   return (
-    <div className={styles.input}>
-    <button
-      type={type}
-      value={value}
-      
-     
-    />
-    </div>
+    <button className={styles.button}  type={type} onClick={onClick}>
+      {value}
+    </button>
   );
 };
 
-export default Input;
+export default Button;

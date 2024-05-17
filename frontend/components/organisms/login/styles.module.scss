@@ -1,0 +1,30 @@
+@import '../../../styles/common.scss';
+
+.login {
+  height: 100vh;
+  width: 100vw;
+
+  .authCover {
+    @include flex-container(
+      $spacing: center,
+      $alignment: center,
+      $direction: column
+    );
+    background-color: $bg-100;
+    height: 100vh;
+  }
+
+  .loginForm {
+    height: 100vh;
+    @include flex-container(
+      $spacing: center,
+      $alignment: center,
+      $direction: column
+    );
+    .loginBlock {
+      width: 338px;
+      text-align: left;
+      @include flex-container($direction: column);
+    }
+  }
+}
