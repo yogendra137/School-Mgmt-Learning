@@ -11,6 +11,7 @@ const message = {
     resourceDeleteSuccess: 'Resource deleted successfully!',
     fetchResourceListSuccess: 'Fetch list of resource!',
     changeResourcesStatus: 'Resource status updated successfully!',
+    notPermission: "You don't have a permission",
 };
 
 export { message };

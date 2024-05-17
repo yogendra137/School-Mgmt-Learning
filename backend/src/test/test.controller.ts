@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import testService from './test.service';
 
-const addTest = async (req: Request, res: Response) => {
+const addTestType = async (req: Request, res: Response) => {
     try {
-        const response: any = await testService.addTest(req);
+        const response: any = await testService.addTestType(req);
         if (response) {
             const { message, status } = response;
             res.status(200).json({ message, status });
@@ -26,4 +26,4 @@ const testList = async (req: Request, res: Response) => {
         res.status(401).json({ error: error.message });
     }
 };
-export default { addTest, testList };
+export default { addTestType, testList };

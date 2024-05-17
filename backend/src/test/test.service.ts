@@ -3,28 +3,36 @@ import { AddTestInterface } from './interface';
 import testModel from './test.model';
 /**
  * This function is use for add test
- * @param userData
+ * @param testData
  * @returns
  */
-const addTest = async (userData: any) => {
+const addTestType = async (testData: any) => {
     try {
         const {
-            body: { testName, skills, description, duration, createdBy, updatedBy },
-        }: AddTestInterface = userData;
-        // we will get SA id which add roles will add in updated BY and created by so this will get by auth middleware
-        await testModel.create({
-            testName,
-            skills,
-            description,
-            duration,
-            isActive: true,
-            createdBy,
-            updatedBy,
-        });
-        return {
-            message: message.testAddedSuccess,
-            status: 200,
-        };
+            body: { testName, skills, description, duration },
+            user: { _id, userType },
+        }: AddTestInterface = testData;
+        console.log(_id, userType, '_id');
+        if (userType === 'SA') {
+            await testModel.create({
+                testName,
+                skills,
+                description,
+                duration,
+                isActive: true,
+                createdBy: _id,
+                updatedBy: _id,
+            });
+            return {
+                message: message.testAddedSuccess,
+                status: 200,
+            };
+        } else {
+            return {
+                message: message.notPermission,
+                status: 403,
+            };
+        }
     } catch (error) {
         console.log('error', error);
         // will throw error
@@ -49,6 +57,6 @@ const testList = async () => {
     }
 };
 export default {
-    addTest,
+    addTestType,
     testList,
 };

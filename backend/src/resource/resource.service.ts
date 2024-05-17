@@ -11,33 +11,38 @@ import resourceModel from './resource.model';
 const addResource = async (resourceData: any) => {
     try {
         const {
-            body: { title, description, tags, createdBy, updatedBy },
+            body: { title, description, tags },
             files,
+            user: { _id, userType },
         }: AddResourceInterface = resourceData;
-        console.log('tags', tags, typeof tags);
         const resourceTages = String(tags).split(',');
         const resourceEntries = [];
-
-        // Iterate over each file
-        for (const file of files) {
-            // Create a database entry for each file
-            const newResource = await resourceModel.create({
-                fileName: file.filename,
-                title,
-                description,
-                tags: resourceTages,
-                isActive: true,
-                createdBy,
-                updatedBy,
-            });
-            resourceEntries.push(newResource);
+        if (userType == 'SA') {
+            // Iterate over each file
+            for (const file of files) {
+                // Create a database entry for each file
+                const newResource = await resourceModel.create({
+                    fileName: file.filename,
+                    title,
+                    description,
+                    tags: resourceTages,
+                    isActive: true,
+                    createdBy: _id,
+                    updatedBy: _id,
+                });
+                resourceEntries.push(newResource);
+            }
+            return {
+                message: message.resourceAddedSuccess,
+                status: true,
+                resourceEntries, // Return the created resource entries if needed
+            };
+        } else {
+            return {
+                message: message.notPermission,
+                status: 403,
+            };
         }
-
-        return {
-            message: message.resourceAddedSuccess,
-            status: true,
-            resourceEntries, // Return the created resource entries if needed
-        };
     } catch (error) {
         console.log('error', error);
         // Handle error appropriately
@@ -69,25 +74,32 @@ const getResourceById = async (resourceId: any) => {
 const editResource = async (resourceData: any) => {
     try {
         const {
-            body: { title, description, tags },
+            body: { title, description, tags, fileName },
             params: { id },
+            user: { _id, userType },
         }: AddResourceInterface = resourceData;
         // we will get SA id which add roles will add in updated BY and created by so this will get by auth middleware
         const payload: any = {
+            fileName,
             title,
             description,
             tags,
+            createdBy: _id,
+            updatedBy: _id,
         };
+        console.log('resourceData', resourceData.files);
         if (resourceData.files && resourceData.files.length) {
-            const resourceFiles: string[] = [];
-            if (Array.isArray(resourceData.files)) {
-                resourceData.files.forEach((element: any) => {
-                    resourceFiles.push(element.filename);
-                });
-            }
+            console.log('resourceData.files', resourceData.files);
+            // const resourceFiles: string[] = [];
+            // if (Array.isArray(resourceData.files)) {
+            //     resourceData.files.forEach((element: any) => {
+            //         resourceFiles.push(element.filename);
+            //     });
+            // }
             // need to manage delete file from folder also so will do later
-            payload.fileName = resourceFiles;
+            payload.fileName = resourceData.files;
         }
+        console.log('payload....', payload ,payload.fileName);
         await resourceModel.updateOne(
             {
                 _id: id,
