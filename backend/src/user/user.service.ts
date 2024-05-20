@@ -2,6 +2,7 @@ import { encryptPassword, message } from '../common';
 import messages from '../config/messages';
 import { AddUserInterface } from './interface';
 import userModel from './user.model';
+import jwt from 'jsonwebtoken';
 /**
  * This route for to add user with different roles
  * @param userData
@@ -12,6 +13,7 @@ const addUser = async (userData: any) => {
     try {
         const {
             body: { name, email, mobileNo, userType, haveSkills, createdBy, updatedBy },
+            // user: { _id, userType:{userRole} },
         }: AddUserInterface = userData;
         // we will get SA id which add roles will add in updated BY and created by so this will get by auth middleware
         /**
@@ -20,8 +22,9 @@ const addUser = async (userData: any) => {
         const generatePassword = Math.random().toString(36).slice(-8);
         console.log('generatePassword', generatePassword);
         const hashedPassword = await encryptPassword(generatePassword);
+
         console.log('hashedPassword', hashedPassword);
-        await userModel.create({
+        const user = await userModel.create({
             name,
             email,
             mobileNo,
@@ -32,9 +35,14 @@ const addUser = async (userData: any) => {
             createdBy,
             updatedBy,
         });
+        const token = jwt.sign(
+            { _id: user._id, email: user.email, userType: user.userType },
+            process.env.JWT_PRIVATE_KEY || '',
+        );
         return {
             message: message.userAddedSuccess,
             status: true,
+            token,
         };
     } catch (error) {
         console.log('error', error);

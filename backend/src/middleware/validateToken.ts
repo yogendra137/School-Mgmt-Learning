@@ -8,7 +8,7 @@ interface NewRequest extends Request {
     user?: any;
 }
 
-const authenticateJWT = (req: NewRequest, res: Response, next: NextFunction) => {
+const authenticateToken = (req: NewRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (authHeader) {
@@ -34,4 +34,4 @@ const authenticateJWT = (req: NewRequest, res: Response, next: NextFunction) => 
     }
 };
 
-export default authenticateJWT;
+export default authenticateToken;
