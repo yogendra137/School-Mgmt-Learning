@@ -7,7 +7,7 @@ const handleValidationErrors = async (req: Request, res: Response, next: NextFun
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const errorsArray = errors.array();
-        let errorMessages: any = {};
+        const errorMessages: any = {};
         errorsArray.forEach((error: any) => {
             if (!errorMessages[error.path]) errorMessages[error.path] = error.msg;
         });

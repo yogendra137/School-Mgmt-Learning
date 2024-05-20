@@ -17,5 +17,9 @@ interface AddTestInterface {
         createdBy: string;
         updatedBy: string;
     };
+    user: {
+        _id: string;
+        userType: string;
+    };
 }
 export { TestModelInterface, AddTestInterface };

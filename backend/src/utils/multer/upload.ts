@@ -10,9 +10,10 @@ const randomGenerate = Math.random().toString(36).slice(-5);
 
 const storage = multer.diskStorage({
     destination: uploadPath,
-    filename (req, file, cb) {
+    filename(req, file, cb) {
         try {
-            cb(null, file.fieldname + '_' + Date.now() + randomGenerate + path.extname(file.originalname));
+            // cb(null, file.fieldname + '_' + Date.now() + randomGenerate + path.extname(file.originalname));
+            cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));
         } catch (err) {
             console.log('error');
         }

@@ -9,37 +9,34 @@ import schoolModel from './school.model';
 const addSchool = async (schoolData: any) => {
     try {
         const {
-            body: {
+            body: { schoolName, contactPerson, contactEmail, contactNumber, city, state, country },
+            user: { _id, userType },
+        }: AddSchoolInterface = schoolData;
+        if (userType === 'SA') {
+            await schoolModel.create({
                 schoolName,
                 contactPerson,
                 contactEmail,
                 contactNumber,
-                city,
-                state,
-                country,
-                createdBy,
-                updatedBy,
-            },
-        }: AddSchoolInterface = schoolData;
-        // we will get SA id which add roles will add in updated BY and created by so this will get by auth middleware
-        await schoolModel.create({
-            schoolName,
-            contactPerson,
-            contactEmail,
-            contactNumber,
-            location: {
-                city,
-                state,
-                country,
-            },
-            isActive: true,
-            createdBy,
-            updatedBy,
-        });
-        return {
-            message: message.schoolAddSuccess,
-            status: 200,
-        };
+                location: {
+                    city,
+                    state,
+                    country,
+                },
+                isActive: true,
+                createdBy: _id,
+                updatedBy: _id,
+            });
+            return {
+                message: message.schoolAddSuccess,
+                status: 200,
+            };
+        } else {
+            return {
+                message: message.notPermission,
+                status: 403,
+            };
+        }
     } catch (error) {
         console.log('error', error);
     }
