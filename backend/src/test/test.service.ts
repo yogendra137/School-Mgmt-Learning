@@ -1,4 +1,4 @@
-import { message } from '../common';
+import { messages } from '../common';
 import { AddTestInterface } from './interface';
 import testModel from './test.model';
 /**
@@ -23,12 +23,12 @@ const addTestType = async (testData: any) => {
                 updatedBy: _id,
             });
             return {
-                message: message.testAddedSuccess,
+                message: messages.TEST_ADDED_SUCCESS,
                 status: 200,
             };
         } else {
             return {
-                message: message.notPermission,
+                message: messages.NOT_PERMISSION,
                 status: 403,
             };
         }
@@ -45,7 +45,7 @@ const testList = async () => {
     try {
         const list = await testModel.find({}, { testName: 1, skills: 1, duration: 1 });
         return {
-            message: message.fetchTestList,
+            message: messages.FETCH_TEST_LIST,
             status: 200,
             list,
         };

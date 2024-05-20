@@ -1,4 +1,4 @@
-import { message } from '../common';
+import { messages } from '../common';
 import { AddSchoolInterface } from './interface';
 import schoolModel from './school.model';
 /**
@@ -28,12 +28,12 @@ const addSchool = async (schoolData: any) => {
                 updatedBy: _id,
             });
             return {
-                message: message.schoolAddSuccess,
+                message: messages.SCHOOL_ADDED_SUCCESS,
                 status: 200,
             };
         } else {
             return {
-                message: message.notPermission,
+                message: messages.NOT_PERMISSION,
                 status: 403,
             };
         }
@@ -53,7 +53,7 @@ const schoolList = async () => {
         );
         console.log(list, 'list');
         return {
-            message: message.fetchSchoolListSuccess,
+            message: messages.FETCH_SCHOOL_LIST_SUCCESS,
             status: true,
             list,
         };
@@ -67,7 +67,7 @@ const getSchoolById = async (schoolId: any) => {
         const { id }: any = schoolId;
         const school = await schoolModel.findOne({ _id: id });
         return {
-            message: message.fetchSchool,
+            message: messages.FETCH_SCHOOL,
             status: true,
             school,
         };

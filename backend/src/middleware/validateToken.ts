@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import HTTPStatus from '../config/statusCode';
 import UserModel from '../user/user.model';
-import messages from '../config/messages';
+import { messages } from '../common';
 
 interface NewRequest extends Request {
     user?: any;

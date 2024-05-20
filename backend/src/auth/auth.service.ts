@@ -3,9 +3,10 @@ import jwt from 'jsonwebtoken';
 
 import UserModel from '../user/user.model';
 import { UserModelInterface } from '../user/interface';
-import messages from '../config/messages';
+import { messages } from '../common';
 import TokenHistoryModel from './tokenHistory.model';
-const login = async (email: string, password: string) => {
+import accessLogsModel from '../accessLogs/access.logs.model';
+const login = async (email: string, password: string, loginIp: any, loginPlatform: any) => {
     try {
         const user: UserModelInterface | null = await UserModel.findOne({ email });
         if (user) {
@@ -15,6 +16,7 @@ const login = async (email: string, password: string) => {
                 { _id: user._id, email: user.email, userType: user.userType },
                 process.env.JWT_PRIVATE_KEY ?? '',
             );
+            await accessLogsModel.findOneAndUpdate({ _id: user._id }, { $set: { loginIp, loginPlatform } });
             return { success: true, token, message: messages.LOGIN_SUCCESSFULLY };
         }
         return {

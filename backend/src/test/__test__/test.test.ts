@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../server';
-import { message } from '../../common';
+import { messages } from '../../common';
 
 describe('POST /add', () => {
     it('responds with 200 if add test', async () => {
@@ -24,7 +24,7 @@ describe('POST /add', () => {
             expect(res.status).toBe(200);
 
             // Check if the response body contains the expected message
-            expect(res.body.message).toBe(message.testAddedSuccess);
+            expect(res.body.message).toBe(messages.TEST_ADDED_SUCCESS);
         } catch (error) {
             // Log any errors for debugging
             console.error('Test case error:', error);
@@ -42,6 +42,6 @@ describe('GET /list', () => {
         expect(res.status).toBe(200);
 
         // Check if the response body contains the expected message
-        expect(res.body.message).toBe(message.fetchTestList);
+        expect(res.body.message).toBe(messages.FETCH_TEST_LIST);
     });
 });

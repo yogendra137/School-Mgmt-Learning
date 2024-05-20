@@ -16,8 +16,10 @@ const addUser = async (req: Request, res: Response) => {
 
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        const result = await userService.deleteUser(id);
+        // const { id } = req.params;
+        // console.log('......', req.user);
+        // return 0;
+        const result = await userService.deleteUser(req);
         console.log('result', result);
         if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         res.status(HTTPStatus.NOT_FOUND).json({ ...result });

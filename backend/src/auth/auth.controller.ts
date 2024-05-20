@@ -10,8 +10,10 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
         const decodedPassword = decipher()(password);
+        const ip: any = req.socket.remoteAddress;
+        const loginPlatform: any = req.headers['user-agent'];
 
-        const result = await authService.login(email, decodedPassword);
+        const result = await authService.login(email, decodedPassword, ip, loginPlatform);
         if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         else if (result?.error) throw new Error(result.message);
         res.status(HTTPStatus.NOT_FOUND).json({ success: false, message: result?.message });

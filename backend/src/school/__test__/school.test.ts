@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../server';
-import { message } from '../../common';
+import { messages } from '../../common';
 
 describe('POST /add', () => {
     it('responds with 200 if add school', async () => {
@@ -22,6 +22,6 @@ describe('POST /add', () => {
         expect(res.status).toBe(200);
 
         // Check if the response body contains the expected message
-        expect(res.body.message).toBe(message.schoolAddSuccess);
+        expect(res.body.message).toBe(messages.SCHOOL_ADDED_SUCCESS);
     });
 });

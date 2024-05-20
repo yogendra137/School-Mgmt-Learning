@@ -1,5 +1,5 @@
-import { encryptPassword, message } from '../common';
-import messages from '../config/messages';
+import accessLogsModel from '../accessLogs/access.logs.model';
+import { encryptPassword, messages } from '../common';
 import { AddUserInterface } from './interface';
 import userModel from './user.model';
 import jwt from 'jsonwebtoken';
@@ -22,7 +22,8 @@ const addUser = async (userData: any) => {
         const generatePassword = Math.random().toString(36).slice(-8);
         console.log('generatePassword', generatePassword);
         const hashedPassword = await encryptPassword(generatePassword);
-
+        const loginIp = userData.socket.remoteAddress;
+        const loginPlatform = userData.headers['user-agent'];
         console.log('hashedPassword', hashedPassword);
         const user = await userModel.create({
             name,
@@ -35,12 +36,20 @@ const addUser = async (userData: any) => {
             createdBy,
             updatedBy,
         });
+        // Add entry on access logs
+        await accessLogsModel.create({
+            userId: user._id,
+            loginDateAndTime: new Date(),
+            loginIp,
+            loginPlatform,
+        });
+        // await accessLogsModel.cr({ _id: user._id }, { $set: { loginIp, loginPlatform } });
         const token = jwt.sign(
             { _id: user._id, email: user.email, userType: user.userType },
             process.env.JWT_PRIVATE_KEY || '',
         );
         return {
-            message: message.userAddedSuccess,
+            message: messages.USER_ADDED_SUCCESS,
             status: true,
             token,
         };
@@ -50,14 +59,18 @@ const addUser = async (userData: any) => {
     }
 };
 
-const deleteUser = async (id: string) => {
+const deleteUser = async (resourceData: any) => {
     try {
+        const {
+            params: { id },
+            user: { _id },
+        }: AddUserInterface = resourceData;
         const user = await userModel.findOne({ _id: id });
         if (!user) return { success: false, message: messages.USER_NOT_FOUND };
         if (user?.userType === 'SA') return { success: false, message: messages.SUPER_ADMIN_NOT_DEACTIVATE };
 
         if (!user?.isDeleted) {
-            const result = await userModel.updateOne({ _id: id }, { $set: { isDeleted: true } });
+            const result = await userModel.updateOne({ _id: id }, { $set: { isDeleted: true, updatedBy: _id } });
             if (result.modifiedCount)
                 return {
                     message: messages.USER_DELETED,
