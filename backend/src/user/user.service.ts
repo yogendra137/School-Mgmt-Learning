@@ -13,6 +13,7 @@ const addUser = async (userData: any) => {
     try {
         const {
             body: { name, email, mobileNo, userType, haveSkills, createdBy, updatedBy },
+            // user: { _id, userType:{userRole} },
         }: AddUserInterface = userData;
         // we will get SA id which add roles will add in updated BY and created by so this will get by auth middleware
         /**
@@ -34,20 +35,10 @@ const addUser = async (userData: any) => {
             createdBy,
             updatedBy,
         });
-
-        // const access = {
-        //     id: user.id,
-        //     email: user.userType,
-        //   };
-        //   const token = jwt.sign(access, process.env.JWT_PRIVATE_KEY || '', {
-        //     expiresIn: 86400,
-        //   });
-
         const token = jwt.sign(
             { _id: user._id, email: user.email, userType: user.userType },
             process.env.JWT_PRIVATE_KEY || '',
         );
-        console.log('token,,,,,,', token);
         return {
             message: message.userAddedSuccess,
             status: true,

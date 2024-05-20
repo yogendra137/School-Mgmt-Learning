@@ -31,6 +31,11 @@ interface AddUserInterface {
         createdAt: Date;
         updatedAt: Date;
     };
+    user: {
+        _id: string;
+        userRole: string;
+        userType: any;
+    };
 }
 
 export { UserModelInterface, AddUserInterface };

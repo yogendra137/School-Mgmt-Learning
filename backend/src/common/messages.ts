@@ -9,6 +9,7 @@ const message = {
     updateResourceSuccess: 'Resource updated successfully!',
     fetchResourceSuccess: 'Resource fetch successfully!',
     resourceDeleteSuccess: 'Resource deleted successfully!',
+    resourceNotFound: 'Resource is not found!',
     fetchResourceListSuccess: 'Fetch list of resource!',
     changeResourcesStatus: 'Resource status updated successfully!',
     notPermission: "You don't have a permission",

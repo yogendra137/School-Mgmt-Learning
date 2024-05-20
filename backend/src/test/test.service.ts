@@ -12,7 +12,6 @@ const addTestType = async (testData: any) => {
             body: { testName, skills, description, duration },
             user: { _id, userType },
         }: AddTestInterface = testData;
-        console.log(_id, userType, '_id');
         if (userType === 'SA') {
             await testModel.create({
                 testName,
@@ -45,7 +44,6 @@ const addTestType = async (testData: any) => {
 const testList = async () => {
     try {
         const list = await testModel.find({}, { testName: 1, skills: 1, duration: 1 });
-        // console.log('list', list);
         return {
             message: message.fetchTestList,
             status: 200,
