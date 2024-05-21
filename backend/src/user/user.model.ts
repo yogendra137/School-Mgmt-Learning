@@ -28,8 +28,8 @@ const userSchema = new Schema<UserModelInterface>(
         license: { type: String, default: null },
         isActive: { type: Boolean, default: false },
         isDeleted: { type: Boolean, default: false },
-        createdBy: { type: String },
-        updatedBy: { type: String },
+        createdBy: { type: String, default: null },
+        updatedBy: { type: String, default: null },
     },
     {
         timestamps: true,

@@ -6,6 +6,9 @@ import { UserModelInterface } from '../user/interface';
 import { messages } from '../common';
 import TokenHistoryModel from './tokenHistory.model';
 import accessLogsModel from '../accessLogs/access.logs.model';
+import mongoose from 'mongoose';
+const ObjectId = mongoose.Types.ObjectId;
+
 const login = async (email: string, password: string, loginIp: any, loginPlatform: any) => {
     try {
         const user: UserModelInterface | null = await UserModel.findOne({ email });
@@ -16,7 +19,13 @@ const login = async (email: string, password: string, loginIp: any, loginPlatfor
                 { _id: user._id, email: user.email, userType: user.userType },
                 process.env.JWT_PRIVATE_KEY ?? '',
             );
-            await accessLogsModel.findOneAndUpdate({ _id: user._id }, { $set: { loginIp, loginPlatform } });
+            console.log('user._id', user._id);
+            await accessLogsModel.findOneAndUpdate(
+                { userId: new ObjectId(user._id) },
+                { $set: { loginIp, loginPlatform, loginDateAndTime: new Date() } },
+                { new: true },
+            );
+
             return { success: true, token, message: messages.LOGIN_SUCCESSFULLY };
         }
         return {

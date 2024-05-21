@@ -1,8 +1,9 @@
 import accessLogsModel from '../accessLogs/access.logs.model';
-import { encryptPassword, messages } from '../common';
+import { decipher, messages } from '../common';
 import { AddUserInterface } from './interface';
 import userModel from './user.model';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 /**
  * This route for to add user with different roles
  * @param userData
@@ -12,29 +13,28 @@ import jwt from 'jsonwebtoken';
 const addUser = async (userData: any) => {
     try {
         const {
-            body: { name, email, mobileNo, userType, haveSkills, createdBy, updatedBy },
-            // user: { _id, userType:{userRole} },
+            body: { name, email, mobileNo, password, userType, haveSkills },
+            user: { _id, userType: userRole },
         }: AddUserInterface = userData;
-        // we will get SA id which add roles will add in updated BY and created by so this will get by auth middleware
+
         /**
          * Generate random password
          */
-        const generatePassword = Math.random().toString(36).slice(-8);
-        console.log('generatePassword', generatePassword);
-        const hashedPassword = await encryptPassword(generatePassword);
+        const decodedPassword = decipher()(password);
+        const password1 = bcrypt.hashSync(decodedPassword, 10);
         const loginIp = userData.socket.remoteAddress;
         const loginPlatform = userData.headers['user-agent'];
-        console.log('hashedPassword', hashedPassword);
+        // console.log('hashedPassword', hashedPassword);
         const user = await userModel.create({
             name,
             email,
             mobileNo,
-            password: hashedPassword,
+            password: password1,
             haveSkills,
             isActive: true,
             userType,
-            createdBy,
-            updatedBy,
+            createdBy: userRole === 'SA' ? _id : null,
+            updatedBy: userRole === 'SA' ? _id : null,
         });
         // Add entry on access logs
         await accessLogsModel.create({
@@ -87,7 +87,7 @@ const deleteUser = async (resourceData: any) => {
     }
 };
 
-const toggleUserStatus = async (id: string, status: boolean) => {
+const changeUserStatus = async (id: string, status: boolean) => {
     try {
         const user = await userModel.findOne({ _id: id, isDeleted: false });
         if (!user) return { success: false, message: messages.USER_NOT_FOUND };
@@ -104,6 +104,6 @@ const toggleUserStatus = async (id: string, status: boolean) => {
 
 export default {
     addUser,
-    toggleUserStatus,
+    changeUserStatus,
     deleteUser,
 };

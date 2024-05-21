@@ -26,6 +26,7 @@ const messages = {
     LOGIN_SUCCESSFULLY: 'Login successful',
     TOKEN_VERIFIED: 'Token verified successfully',
     TOKEN_UTILIZED: 'Token already utilized',
+    SOMETHING_WENT_WRONG: 'Something went wrong',
 };
 
 export { messages };

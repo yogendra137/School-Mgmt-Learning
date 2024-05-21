@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import testService from './test.service';
+import testService from './testType.service';
 
 const addTestType = async (req: Request, res: Response) => {
     try {

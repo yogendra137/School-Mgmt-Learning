@@ -56,6 +56,7 @@ describe('login function', () => {
         (jwt.sign as jest.Mock).mockReturnValue(token);
 
         const result = await authService.login(email, password, ip, loginPlatform);
+        console.log('result9999', result);
 
         expect(result).toEqual({
             success: true,

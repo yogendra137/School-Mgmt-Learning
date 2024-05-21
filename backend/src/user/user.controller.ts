@@ -28,10 +28,10 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const toggleUserStatus = async (req: Request, res: Response, next: NextFunction) => {
+const changeUserStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id, status } = req.params;
-        const result = await userService.toggleUserStatus(id, Boolean(status));
+        const result = await userService.changeUserStatus(id, Boolean(status));
         if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         res.status(HTTPStatus.NOT_FOUND).json({ ...result });
     } catch (error) {
@@ -39,4 +39,4 @@ const toggleUserStatus = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
-export default { addUser, toggleUserStatus, deleteUser };
+export default { addUser, changeUserStatus, deleteUser };

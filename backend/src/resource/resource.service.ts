@@ -36,7 +36,7 @@ const addResource = async (resourceData: any) => {
             }
             return {
                 message: messages.RESOURCE_ADDED_SUCCESS,
-                status: true,
+                status: 200,
                 resourceEntries, // Return the created resource entries if needed
             };
         } else {
@@ -48,6 +48,7 @@ const addResource = async (resourceData: any) => {
     } catch (error) {
         console.log('error', error);
         // Handle error appropriately
+        return { success: false, message: (error as Error).message };
     }
 };
 /**
@@ -59,6 +60,12 @@ const getResourceById = async (resourceId: any) => {
     try {
         const { id }: any = resourceId;
         const resource = await resourceModel.findOne({ _id: id });
+        if (!resource) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: false,
+            };
+        }
         return {
             message: messages.FETCH_RESOURCE_SUCCESS,
             status: 200,
@@ -66,6 +73,7 @@ const getResourceById = async (resourceId: any) => {
         };
     } catch (error) {
         console.log('error ', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 /**
@@ -111,6 +119,7 @@ const editResource = async (resourceData: any) => {
         };
     } catch (error) {
         console.log('error', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 /**
@@ -150,13 +159,13 @@ const deleteResource = async (resourceData: any) => {
                 console.log(`${updatedResource.fileName} moved to ${deletedPath}`);
             });
 
-            if (!updatedResource) {
-                // Resource not found or already deleted
-                return {
-                    message: messages.RESOURCE_NOT_FOUND,
-                    status: 404,
-                };
-            }
+            // if (!updatedResource) {
+            //     // Resource not found or already deleted
+            //     return {
+            //         message: messages.RESOURCE_NOT_FOUND,
+            //         status: 404,
+            //     };
+            // }
         }
 
         return {
@@ -165,6 +174,7 @@ const deleteResource = async (resourceData: any) => {
         };
     } catch (error) {
         console.log('error', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 
@@ -196,9 +206,12 @@ const activeAndDeActiveResource = async (resourceData: any) => {
                 message: messages.CHANGE_RESOURCE_STATUS,
                 status: 200,
             };
+        } else {
+            throw new Error('User is not authorized'); // Throw an error if user is not SA
         }
     } catch (error) {
         console.log(error, 'error');
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 

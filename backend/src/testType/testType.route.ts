@@ -1,5 +1,5 @@
 import express from 'express';
-import testController from './test.controller';
+import testController from './testType.controller';
 import authenticateToken from '../middleware/validateToken';
 
 const router = express.Router();

@@ -39,6 +39,7 @@ const addSchool = async (schoolData: any) => {
         }
     } catch (error) {
         console.log('error', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 /**
@@ -51,14 +52,14 @@ const schoolList = async () => {
             {},
             { schoolName: 1, contactPerson: 1, contactEmail: 1, contactNumber: 1, location: 1 },
         );
-        console.log(list, 'list');
         return {
             message: messages.FETCH_SCHOOL_LIST_SUCCESS,
-            status: true,
+            status: 200,
             list,
         };
     } catch (error) {
         console.log('');
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 
@@ -66,6 +67,12 @@ const getSchoolById = async (schoolId: any) => {
     try {
         const { id }: any = schoolId;
         const school = await schoolModel.findOne({ _id: id });
+        if (!school) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: false,
+            };
+        }
         return {
             message: messages.FETCH_SCHOOL,
             status: true,
@@ -73,6 +80,7 @@ const getSchoolById = async (schoolId: any) => {
         };
     } catch (error) {
         console.log('error', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 

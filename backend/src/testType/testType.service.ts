@@ -1,6 +1,6 @@
 import { messages } from '../common';
 import { AddTestInterface } from './interface';
-import testModel from './test.model';
+import testModel from './testType.model';
 /**
  * This function is use for add test
  * @param testData
@@ -34,7 +34,7 @@ const addTestType = async (testData: any) => {
         }
     } catch (error) {
         console.log('error', error);
-        // will throw error
+        return { success: false, message: (error as Error).message };
     }
 };
 /**
@@ -43,7 +43,7 @@ const addTestType = async (testData: any) => {
  */
 const testList = async () => {
     try {
-        const list = await testModel.find({}, { testName: 1, skills: 1, duration: 1 });
+        const list = await testModel.find({}, { testName: 1, skills: 1, duration: 1, isActive: 1, description: 1 });
         return {
             message: messages.FETCH_TEST_LIST,
             status: 200,
@@ -51,7 +51,7 @@ const testList = async () => {
         };
     } catch (error) {
         console.log('error', error);
-        // will throw error
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 export default {
