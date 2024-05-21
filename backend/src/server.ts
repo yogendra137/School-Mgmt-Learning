@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import http from 'http';
 import { connect } from 'mongoose';
 import dotenv from 'dotenv';
@@ -12,6 +13,7 @@ const app = express();
 
 const url: string | undefined = process.env.DB_URL || '';
 
+app.use(cors());
 app.use(express.json());
 
 const staticPath = path.join(__dirname);
