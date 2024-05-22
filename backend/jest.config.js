@@ -13,5 +13,5 @@ module.exports = {
     },
     // An array of glob patterns indicating a set of files for which coverage information should be collected
     collectCoverageFrom: ['./src/**/*.(t|j)s', './src/**/**/*.(t|j)s', './src/*.(t|j)s'],
-    coveragePathIgnorePatterns: ['/node_modules/', 'src/**/__test__/']
+    coveragePathIgnorePatterns: ['/node_modules/', '/src/.*/__mock__/'],
 };
