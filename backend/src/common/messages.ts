@@ -29,6 +29,7 @@ const messages = {
     SOMETHING_WENT_WRONG: 'Something went wrong',
     TOKEN_NOT_FOUND: 'Token does not exist',
     YOU_CAN_NOT_DELETE_SUPER_ADMIN: "You can't delete the super admin",
+    NOT_FOUND: 'Item not found',
 };
 
 export { messages };

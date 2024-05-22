@@ -1,6 +1,7 @@
 import { messages } from '../common';
 import { AddSchoolInterface } from './interface';
 import schoolModel from './school.model';
+import httpsStatusCode from '../config/statusCode';
 /**
  * This route for to add school by admin
  * @param schoolData
@@ -11,6 +12,7 @@ const addSchool = async (schoolData: any) => {
         const {
             body: { schoolName, contactPerson, contactEmail, contactNumber, city, state, country },
             user: { _id, userType },
+            file,
         }: AddSchoolInterface = schoolData;
         if (userType === 'SA') {
             await schoolModel.create({
@@ -18,6 +20,7 @@ const addSchool = async (schoolData: any) => {
                 contactPerson,
                 contactEmail,
                 contactNumber,
+                schoolLogo: file.filename,
                 location: {
                     city,
                     state,
@@ -29,58 +32,75 @@ const addSchool = async (schoolData: any) => {
             });
             return {
                 message: messages.SCHOOL_ADDED_SUCCESS,
-                status: 200,
+                status: httpsStatusCode.OK,
             };
         } else {
             return {
                 message: messages.NOT_PERMISSION,
-                status: 403,
+                status: httpsStatusCode.FORBIDDEN,
             };
         }
     } catch (error) {
         console.log('error', error);
-        return { success: false, status: 500, message: (error as Error).message };
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
     }
 };
 /**
  * This function is use for the get list of school
  * @returns status,message and list
  */
-const schoolList = async () => {
+const schoolList = async (user: any) => {
     try {
-        const list = await schoolModel.find(
-            {},
-            { schoolName: 1, contactPerson: 1, contactEmail: 1, contactNumber: 1, location: 1 },
-        );
-        return {
-            message: messages.FETCH_SCHOOL_LIST_SUCCESS,
-            status: 200,
-            list,
-        };
-    } catch (error) {
-        console.log('');
-        return { success: false, status: 500, message: (error as Error).message };
-    }
-};
-
-const getSchoolById = async (schoolId: any) => {
-    try {
-        const { id }: any = schoolId;
-        const school = await schoolModel.findOne({ _id: id });
-        if (!school) {
+        if (!user) {
             return {
                 message: messages.SOMETHING_WENT_WRONG,
                 status: false,
             };
         }
+        const list = await schoolModel.find(
+            {},
+            { schoolName: 1, contactPerson: 1, contactEmail: 1, contactNumber: 1, location: 1 },
+        );
+        if (!list) {
+            return {
+                message: messages.NOT_FOUND.replace('Item', 'School'),
+                status: false,
+            };
+        }
+        return {
+            message: messages.FETCH_SCHOOL_LIST_SUCCESS,
+            status: httpsStatusCode.OK,
+            list,
+        };
+    } catch (error) {
+        console.log('');
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
+    }
+};
+
+const getSchoolById = async (schoolId: any, user: any) => {
+    try {
+        if (!user) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: false,
+            };
+        }
+        const school = await schoolModel.findOne({ _id: schoolId });
+        if (!school) {
+            return {
+                message: messages.NOT_FOUND.replace('Item', 'School'),
+                status: false,
+            };
+        }
         return {
             message: messages.FETCH_SCHOOL,
-            status: true,
+            status: httpsStatusCode.OK,
             school,
         };
     } catch (error) {
         console.log('error', error);
-        return { success: false, status: 500, message: (error as Error).message };
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
     }
 };
 

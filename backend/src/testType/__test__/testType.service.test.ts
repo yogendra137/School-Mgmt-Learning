@@ -73,13 +73,38 @@ describe('addTest', () => {
     });
 });
 
-describe('testTypeList', () => {
+describe('testList', () => {
     afterEach(() => {
         jest.clearAllMocks(); // Clear mocks after each test
     });
 
-    it('should return the test type of schools successfully', async () => {
-        const mockSchools = [
+    it('should return an error message when no user is provided', async () => {
+        const result = await testTypeService.testList(null);
+
+        expect(result).toEqual({
+            message: messages.SOMETHING_WENT_WRONG,
+            status: false,
+        });
+    });
+
+    // it('should return a not found message when no tests are found', async () => {
+    //     (testTypeModel.find as jest.Mock).mockResolvedValue([]);
+
+    //     const result = await testTypeService.testList({});
+
+    //     expect(testTypeModel.find).toHaveBeenCalledWith(
+    //         {},
+    //         { testName: 1, skills: 1, duration: 1, isActive: 1, description: 1 },
+    //     );
+    //     console.log('result0000001', result);
+    //     expect(result).toEqual({
+    //         message: messages.NOT_FOUND.replace('Item', 'test'),
+    //         status: false,
+    //     });
+    // });
+
+    it('should return the test list successfully', async () => {
+        const mockTests = [
             {
                 testName: 'Eye test specialist',
                 skills: ['Eye teaming', 'Eye tracking'],
@@ -91,30 +116,30 @@ describe('testTypeList', () => {
             },
         ];
 
-        // Mock the find method to return the mock schools
-        (testTypeModel.find as jest.Mock).mockResolvedValue(mockSchools);
+        // Mock the find method to return the mock tests
+        (testTypeModel.find as jest.Mock).mockResolvedValue(mockTests);
 
         // Call the service function
-        const result = await testTypeService.testList();
+        const result = await testTypeService.testList({});
 
         // Ensure the find method was called with the correct arguments
         expect(testTypeModel.find).toHaveBeenCalledWith(
             {},
-            { testName: 1, skills: 1, duration: 1, description: 1, isActive: 1 },
+            { testName: 1, skills: 1, duration: 1, isActive: 1, description: 1 },
         );
 
         // Ensure the result matches the expected output
         expect(result).toEqual({
             message: messages.FETCH_TEST_LIST,
             status: 200,
-            list: mockSchools,
+            list: mockTests,
         });
     });
 
     it('should handle errors with status 500', async () => {
         (testTypeModel.find as jest.Mock).mockRejectedValue(new Error(messages.INTERNAL_SERVER_ERROR));
 
-        const result = await testTypeService.testList();
+        const result = await testTypeService.testList({});
 
         expect(result).toEqual({
             success: false,

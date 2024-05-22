@@ -4,6 +4,7 @@ import { AddUserInterface } from './interface';
 import userModel from './user.model';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import httpStatusCode from '../config/statusCode';
 /**
  * This route for to add user with different roles
  * @param userData
@@ -16,7 +17,6 @@ const addUser = async (userData: any) => {
             body: { name, email, mobileNo, password, userType, haveSkills },
             user: { _id, userType: userRole },
         }: AddUserInterface = userData;
-
         /**
          * Generate random password
          */
@@ -48,14 +48,15 @@ const addUser = async (userData: any) => {
             { _id: user._id, email: user.email, userType: user.userType },
             process.env.JWT_PRIVATE_KEY || '',
         );
+
+        // await sendEmail('shivani.p@chapter247.com', 'Success', 'null', emailTemplateConstants.SIGNUP_EMAIL_TEMPLATE);
         return {
             message: messages.USER_ADDED_SUCCESS,
-            status: true,
+            status: httpStatusCode.OK,
             token,
         };
     } catch (error) {
         console.log('error', error);
-        // will throw error
     }
 };
 
@@ -75,27 +76,29 @@ const deleteUser = async (resourceData: any) => {
                 return {
                     message: messages.USER_DELETED,
                     success: true,
+                    status: httpStatusCode.OK,
                 };
         }
 
         return {
             message: messages.USER_NOT_FOUND,
             success: false,
+            status: 404,
         };
     } catch (error) {
         return { success: false, message: (error as Error).message };
     }
 };
 
-const changeUserStatus = async (id: string, status: boolean) => {
+const changeUserStatus = async (id: string, status: boolean, userData: any) => {
     try {
         const user = await userModel.findOne({ _id: id, isDeleted: false });
         if (!user) return { success: false, message: messages.USER_NOT_FOUND };
         if (user?.userType === 'SA') return { success: false, message: messages.SUPER_ADMIN_NOT_DEACTIVATE };
-        await userModel.updateOne({ _id: id }, { $set: { isActive: status } });
+        await userModel.updateOne({ _id: id }, { $set: { isActive: status, updatedBy: userData._id } });
         return {
             success: true,
-            message: messages.TOGGLE_STATUS.replace('toggle', status ? 'deactivated' : 'activated'),
+            message: messages.TOGGLE_STATUS.replace('toggle', status ? 'activated' : 'deactivated'),
         };
     } catch (error) {
         return { success: false, message: (error as Error).message };
