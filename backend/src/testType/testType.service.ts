@@ -41,9 +41,21 @@ const addTestType = async (testData: any) => {
  * This function is use for get list of test
  * @returns list
  */
-const testList = async () => {
+const testList = async (user: any) => {
     try {
+        if (!user) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: false,
+            };
+        }
         const list = await testModel.find({}, { testName: 1, skills: 1, duration: 1, isActive: 1, description: 1 });
+        if (!list) {
+            return {
+                message: messages.NOT_FOUND.replace('Item', 'test'),
+                status: false,
+            };
+        }
         return {
             message: messages.FETCH_TEST_LIST,
             status: 200,

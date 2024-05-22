@@ -12,6 +12,7 @@ const schoolSchema = new Schema<SchoolModelInterface>(
             state: { type: String },
             country: { type: String },
         },
+        schoolLogo: { type: String, default: null },
         isActive: { type: Boolean },
         createdBy: { type: String, default: null },
         updatedBy: { type: String, default: null },

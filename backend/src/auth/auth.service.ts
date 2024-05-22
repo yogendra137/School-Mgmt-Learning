@@ -3,10 +3,11 @@ import jwt from 'jsonwebtoken';
 
 import UserModel from '../user/user.model';
 import { UserModelInterface } from '../user/interface';
-import { messages } from '../common';
+import { emailSubjects, emailTemplateConstants, messages } from '../common';
 import TokenHistoryModel from './tokenHistory.model';
 import accessLogsModel from '../accessLogs/access.logs.model';
 import mongoose from 'mongoose';
+import sendEmail from '../utils/email/sendEmail';
 const ObjectId = mongoose.Types.ObjectId;
 
 const login = async (email: string, password: string, loginIp: any, loginPlatform: any) => {
@@ -42,6 +43,7 @@ const forgotPassword = async (email: string) => {
         const user = await UserModel.findOne({ email });
         if (user) {
             const token = jwt.sign({ email: user.email, userType: user.userType }, process.env.JWT_PRIVATE_KEY ?? '');
+            await sendEmail(user.email, emailSubjects.FORGOT_PASSWORD, 'null', emailTemplateConstants.FORGOT_PASSWORD);
             return { success: true, message: messages.EMAIL_SENT, token };
         }
         return {

@@ -27,6 +27,7 @@ const messages = {
     TOKEN_VERIFIED: 'Token verified successfully',
     TOKEN_UTILIZED: 'Token already utilized',
     SOMETHING_WENT_WRONG: 'Something went wrong',
+    NOT_FOUND: 'Item not found',
 };
 
 export { messages };

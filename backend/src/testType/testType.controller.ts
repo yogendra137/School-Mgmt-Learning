@@ -16,7 +16,8 @@ const addTestType = async (req: Request, res: Response) => {
 
 const testList = async (req: Request, res: Response) => {
     try {
-        const response: any = await testService.testList();
+        const { user }: any = req;
+        const response: any = await testService.testList(user);
         if (response) {
             const { message, status, list } = response;
             res.status(200).json({ message, status, list });
