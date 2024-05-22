@@ -1,5 +1,2 @@
-const permissionMatrix = {
-	SA: ['/dashboard', '/add-school', '/edit-school/:id', '/delete-school/:id'],
-	PC: ['/dashboard'],
-};
+const permissionMatrix = {};
 export default permissionMatrix;

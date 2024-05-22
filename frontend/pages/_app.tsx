@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<Provider store={store}>
 			<QueryClientProvider client={queryClient}>
-				<Component {...pageProps} page={page} />;
+				<Component {...pageProps} />;
 			</QueryClientProvider>
 		</Provider>
 	);
