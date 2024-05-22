@@ -140,5 +140,4 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 For any inquiries or support, please contact the project maintainers.
 
 ---
-
-This README file provides an overview of the ICU2 project, detailing the technology stack, project structure, setup instructions, and key features. This should help developers quickly understand and start working on the project.
+# Thank You
