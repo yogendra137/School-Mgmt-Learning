@@ -5,7 +5,6 @@ import { decipher } from '../common';
 interface NewRequest extends Request {
     user?: any;
 }
-
 const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
@@ -14,9 +13,31 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         const loginPlatform: any = req.headers['user-agent'];
 
         const result = await authService.login(email, decodedPassword, ip, loginPlatform);
-        if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
-        else if (result?.error) throw new Error(result.message);
-        res.status(HTTPStatus.NOT_FOUND).json({ success: false, message: result?.message });
+
+        if (result?.success) {
+            // Determine whether the application is served over HTTPS
+            const isSecure = req.secure || process.env.NODE_ENV === 'production';
+            res.cookie('token', result.token, {
+                httpOnly: false,
+                // Test this on the production
+                secure: true, // Use secure cookies in production
+                sameSite: 'none', // Helps to prevent CSRF attacks
+                maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
+            });
+            res.cookie('userType', result.userType, {
+                httpOnly: false,
+                // Test this on the production
+                secure: true, // Use secure cookies in production
+                sameSite: 'none', // Helps to prevent CSRF attacks
+                maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
+            });
+            // Send JSON response
+            return res.status(HTTPStatus.OK).json({ success: result.success, message: result.message });
+        } else if (result?.error) {
+            throw new Error(result.message);
+        } else {
+            res.status(HTTPStatus.NOT_FOUND).json({ success: false, message: result?.message });
+        }
     } catch (error) {
         next(error);
     }

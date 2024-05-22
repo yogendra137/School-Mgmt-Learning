@@ -5,6 +5,7 @@ import { useAppDispatch } from '@/store';
 import { setAuthState } from '@/store/slices/authSlice';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+// import Cookies from 'js-cookie';
 
 export default function LoginPage() {
 	const dispatch = useAppDispatch();
@@ -15,23 +16,20 @@ export default function LoginPage() {
 			return instance.post('/auth/login', { email, password });
 		},
 		onSuccess: (data) => {
-			localStorage.setItem('token', data.data.token);
+			// localStorage.setItem('token', data.data.token);
+			// Cookies.set('token', data.data.token); // Using js-cookie to set the cookie
 			dispatch(setAuthState(true));
+			console.log('I am here or not');
 			router.push('/dashboard');
 		},
 	});
 
 	const onSubmit = () => {
 		mutation.mutate({
-			email: 'rohit@gmail.com',
-			password: encryptPassword('admin'),
+			email: 'project1@gmail.com',
+			password: encryptPassword('Project@123'),
 		});
 	};
 
-	return (
-		<div>
-			<h1>Login Page</h1>
-			<Login onSubmit={onSubmit} />;
-		</div>
-	);
+	return <Login onSubmit={onSubmit} />;
 }
