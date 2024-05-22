@@ -3,9 +3,17 @@ import authService from '../auth.service';
 import HTTPStatus from '../../config/statusCode';
 import authController from '../auth.controller';
 import { decipher } from '../../common';
-
+import app from '../../server'; // Adjust the path as needed
 jest.mock('../auth.service');
 jest.mock('../../common');
+let server: any;
+beforeAll((done) => {
+    server = app.listen(done);
+});
+
+afterAll((done) => {
+    server.close(done);
+});
 
 describe('login', () => {
     let req: Partial<Request>;

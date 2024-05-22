@@ -21,7 +21,6 @@ app.use(express.static(path.join(__dirname)));
 app.use(express.static(staticPath));
 
 const connectOptions = {
-    useNewUrlParser: true,
     connectTimeoutMS: 30000, // Set the connection timeout to 30 seconds (adjust as needed)
 };
 

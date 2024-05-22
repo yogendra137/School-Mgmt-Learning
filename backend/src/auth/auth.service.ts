@@ -17,7 +17,7 @@ const login = async (email: string, password: string, loginIp: any, loginPlatfor
                 return { success: false, message: messages.PASSWORD_INVALID };
             const token = jwt.sign(
                 { _id: user._id, email: user.email, userType: user.userType },
-                process.env.JWT_PRIVATE_KEY ?? '',
+                process.env.JWT_PRIVATE_KEY ?? ''
             );
             console.log('user._id', user._id);
             await accessLogsModel.findOneAndUpdate(
@@ -93,7 +93,7 @@ const resetPassword = async (email: string, password: string) => {
             await UserModel.updateOne({ email }, { $set: { password: user.password } });
             const token = jwt.sign(
                 { email: user.email, userType: user.userType, _id: user._id },
-                process.env.JWT_PRIVATE_KEY ?? '',
+                process.env.JWT_PRIVATE_KEY ?? ''
             );
 
             return { success: true, token, message: messages.PASSWORD_UPDATED };
