@@ -3,9 +3,13 @@ import jwt from 'jsonwebtoken';
 
 import UserModel from '../user/user.model';
 import { UserModelInterface } from '../user/interface';
-import messages from '../config/messages';
-import TokenHistoryModel from './tokenHistory.model';
-const login = async (email: string, password: string) => {
+import { messages } from '../common';
+import UserTokenModel from '../usersToken/userToken.model';
+import accessLogsModel from '../accessLogs/access.logs.model';
+import mongoose from 'mongoose';
+const ObjectId = mongoose.Types.ObjectId;
+
+const login = async (email: string, password: string, loginIp: any, loginPlatform: any) => {
     try {
         const user: UserModelInterface | null = await UserModel.findOne({ email });
         if (user) {
@@ -15,7 +19,15 @@ const login = async (email: string, password: string) => {
                 { _id: user._id, email: user.email, userType: user.userType },
                 process.env.JWT_PRIVATE_KEY ?? ''
             );
-            return { success: true, token, message: messages.LOGIN_SUCCESSFULLY };
+            console.log('user._id', user._id);
+            await accessLogsModel.findOneAndUpdate(
+                { userId: new ObjectId(user._id) },
+                { $set: { loginIp, loginPlatform, loginDateAndTime: new Date() } },
+                { new: true },
+            );
+
+            return { success: true, token, userType: user.userType, message: messages.LOGIN_SUCCESSFULLY };
+
         }
         return {
             success: false,
@@ -31,6 +43,7 @@ const forgotPassword = async (email: string) => {
         const user = await UserModel.findOne({ email });
         if (user) {
             const token = jwt.sign({ email: user.email, userType: user.userType }, process.env.JWT_PRIVATE_KEY ?? '');
+            await UserTokenModel.create({ token, userId: user._id, tokenType: 'FP', isUtilized: false });
             return { success: true, message: messages.EMAIL_SENT, token };
         }
         return {
@@ -64,8 +77,9 @@ const changePassword = async (email: string, oldPassword: string, newPassword: s
 
 const verifyForgotPasswordToken = async (token: string) => {
     try {
-        const result = await TokenHistoryModel.findOne({ token });
-        if (result && result.isUtilized) return { success: false, message: messages.TOKEN_UTILIZED };
+        const result = await UserTokenModel.findOne({ token });
+        if (!result) return { success: false, message: messages.TOKEN_NOT_FOUND };
+        else if (result && result.isUtilized) return { success: false, message: messages.TOKEN_UTILIZED };
         const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY ?? '');
         if (!decoded) return { success: false, message: messages.TOKEN_EXPIRED };
         return { success: true, message: messages.TOKEN_VERIFIED };
@@ -95,7 +109,8 @@ const resetPassword = async (email: string, password: string) => {
 
 const markTokenAsInvalid = async (token: string) => {
     try {
-        await TokenHistoryModel.create({ token });
+        await UserTokenModel.findOneAndUpdate({ token }, { $set: { isUtilized: true } });
+        return { success: true, message: messages.TOKEN_UTILIZED };
     } catch (error) {
         return { success: false, error, message: (error as Error).message };
     }

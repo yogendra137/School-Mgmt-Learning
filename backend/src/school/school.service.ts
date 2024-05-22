@@ -1,4 +1,4 @@
-import { message } from '../common';
+import { messages } from '../common';
 import { AddSchoolInterface } from './interface';
 import schoolModel from './school.model';
 /**
@@ -28,17 +28,18 @@ const addSchool = async (schoolData: any) => {
                 updatedBy: _id,
             });
             return {
-                message: message.schoolAddSuccess,
+                message: messages.SCHOOL_ADDED_SUCCESS,
                 status: 200,
             };
         } else {
             return {
-                message: message.notPermission,
+                message: messages.NOT_PERMISSION,
                 status: 403,
             };
         }
     } catch (error) {
         console.log('error', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 /**
@@ -51,14 +52,14 @@ const schoolList = async () => {
             {},
             { schoolName: 1, contactPerson: 1, contactEmail: 1, contactNumber: 1, location: 1 },
         );
-        console.log(list, 'list');
         return {
-            message: message.fetchSchoolListSuccess,
-            status: true,
+            message: messages.FETCH_SCHOOL_LIST_SUCCESS,
+            status: 200,
             list,
         };
     } catch (error) {
         console.log('');
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 
@@ -66,13 +67,20 @@ const getSchoolById = async (schoolId: any) => {
     try {
         const { id }: any = schoolId;
         const school = await schoolModel.findOne({ _id: id });
+        if (!school) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: false,
+            };
+        }
         return {
-            message: message.fetchSchool,
+            message: messages.FETCH_SCHOOL,
             status: true,
             school,
         };
     } catch (error) {
         console.log('error', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 

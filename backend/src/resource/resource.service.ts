@@ -1,5 +1,5 @@
 import path from 'path';
-import { message } from '../common';
+import { messages } from '../common';
 import { AddResourceInterface } from './interface/resource.interface';
 import resourceModel from './resource.model';
 import fs from 'fs';
@@ -35,19 +35,20 @@ const addResource = async (resourceData: any) => {
                 resourceEntries.push(newResource);
             }
             return {
-                message: message.resourceAddedSuccess,
-                status: true,
+                message: messages.RESOURCE_ADDED_SUCCESS,
+                status: 200,
                 resourceEntries, // Return the created resource entries if needed
             };
         } else {
             return {
-                message: message.notPermission,
+                message: messages.NOT_PERMISSION,
                 status: 403,
             };
         }
     } catch (error) {
         console.log('error', error);
         // Handle error appropriately
+        return { success: false, message: (error as Error).message };
     }
 };
 /**
@@ -59,13 +60,20 @@ const getResourceById = async (resourceId: any) => {
     try {
         const { id }: any = resourceId;
         const resource = await resourceModel.findOne({ _id: id });
+        if (!resource) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: false,
+            };
+        }
         return {
-            message: message.fetchResourceSuccess,
+            message: messages.FETCH_RESOURCE_SUCCESS,
             status: 200,
             resource,
         };
     } catch (error) {
         console.log('error ', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 /**
@@ -106,11 +114,12 @@ const editResource = async (resourceData: any) => {
             },
         );
         return {
-            message: message.updateResourceSuccess,
+            message: messages.UPDATE_RESOURCE_SUCCESS,
             status: 200,
         };
     } catch (error) {
         console.log('error', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 /**
@@ -150,21 +159,22 @@ const deleteResource = async (resourceData: any) => {
                 console.log(`${updatedResource.fileName} moved to ${deletedPath}`);
             });
 
-            if (!updatedResource) {
-                // Resource not found or already deleted
-                return {
-                    message: message.resourceNotFound,
-                    status: 404,
-                };
-            }
+            // if (!updatedResource) {
+            //     // Resource not found or already deleted
+            //     return {
+            //         message: messages.RESOURCE_NOT_FOUND,
+            //         status: 404,
+            //     };
+            // }
         }
 
         return {
-            message: message.resourceDeleteSuccess,
+            message: messages.RESOURCE_DELETE_SUCCESS,
             status: 200,
         };
     } catch (error) {
         console.log('error', error);
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 
@@ -193,12 +203,15 @@ const activeAndDeActiveResource = async (resourceData: any) => {
                 await resourceModel.findOneAndUpdate({ _id: id }, { $set: { isActive: false }, updatedBy: _id });
             }
             return {
-                message: message.changeResourcesStatus,
+                message: messages.CHANGE_RESOURCE_STATUS,
                 status: 200,
             };
+        } else {
+            throw new Error('User is not authorized'); // Throw an error if user is not SA
         }
     } catch (error) {
         console.log(error, 'error');
+        return { success: false, status: 500, message: (error as Error).message };
     }
 };
 

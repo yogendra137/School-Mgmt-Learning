@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import HTTPStatus from '../config/statusCode';
 import UserModel from '../user/user.model';
-import messages from '../config/messages';
+import { messages } from '../common';
 
 interface NewRequest extends Request {
     user?: any;
@@ -14,7 +14,8 @@ const authenticateToken = (req: NewRequest, res: Response, next: NextFunction) =
     if (authHeader) {
         const token = authHeader.split(' ')[1];
 
-        jwt.verify(token, process.env.JWT_PRIVATE_KEY || '', async (err, user) => {
+        console.log('req.cookies.token', req.cookies.token);
+        jwt.verify(token, process.env.JWT_PRIVATE_KEY ?? '', async (err, user) => {
             if (err) {
                 return res.sendStatus(HTTPStatus.INVALID_TOKEN);
             }

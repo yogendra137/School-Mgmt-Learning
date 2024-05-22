@@ -1,0 +1,1 @@
+export { UserTokenModelInterface } from './token';

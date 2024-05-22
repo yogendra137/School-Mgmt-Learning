@@ -4,8 +4,8 @@ import authenticateToken from '../middleware/validateToken';
 
 const router = express.Router();
 
-router.post('/add', authenticateToken, userController.addUser);
+router.post('/add', userController.addUser);
 router.delete('/:id', userController.deleteUser);
-router.put('/activate-deactivate/:id', userController.toggleUserStatus);
+router.put('/change-status/:id', userController.changeUserStatus);
 
 export default router;
