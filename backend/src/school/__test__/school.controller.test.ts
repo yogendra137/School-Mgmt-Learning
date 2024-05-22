@@ -1,0 +1,202 @@
+import { Request, Response } from 'express';
+import schoolController from '../school.controller';
+import schoolService from '../school.service'; // Import your school service
+import { messages } from '../../common'; // Import your messages
+
+// jest.mock('../../school.controller'); // Mock the school service
+jest.mock('../school.service');
+jest.mock('../../common');
+
+describe('addSchoolController', () => {
+    let req: Partial<Request>;
+    let res: Partial<Response>;
+    let next: jest.Mock;
+    let statusMock: jest.Mock;
+    let jsonMock: jest.Mock;
+
+    beforeEach(() => {
+        // Initialize Express Request and Response mocks
+        req = {
+            body: {
+                schoolName: 'Test School',
+                contactPerson: 'John Doe',
+                contactEmail: 'john@example.com',
+                contactNumber: '1234567890',
+                city: 'City',
+                state: 'State',
+                country: 'Country',
+            },
+            user: {
+                _id: 'someUserId',
+                userType: 'SA',
+            },
+        };
+        // this will manage when get json error of actual controller
+        statusMock = jest.fn().mockReturnThis();
+        jsonMock = jest.fn();
+        res = {
+            status: statusMock,
+            json: jsonMock,
+        };
+        next = jest.fn();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should add a new school successfully', async () => {
+        const mockRequestBody = {
+            schoolName: 'Test School',
+            contactPerson: 'John Doe',
+            contactEmail: 'john@example.com',
+            contactNumber: '1234567890',
+            city: 'City',
+            state: 'State',
+            country: 'Country',
+        };
+        // Mock the response from the school service
+        const mockResponse = {
+            message: messages.SCHOOL_ADDED_SUCCESS,
+            status: 200,
+        };
+
+        // Mock the addSchool function of the school service
+        (schoolService.addSchool as jest.Mock).mockResolvedValue(mockResponse);
+
+        // Call the controller function with the mocked Request and Response objects
+        // await addSchoolController(req as Request, res as Response);
+        await schoolController.addSchool({ body: mockRequestBody } as Request, res as Response);
+
+        expect(schoolService.addSchool).toHaveBeenCalledWith({ body: mockRequestBody });
+        // Ensure the status and JSON methods were called with the correct arguments
+        expect(statusMock).toHaveBeenCalledWith(200);
+        expect(jsonMock).toHaveBeenCalledWith({ message: messages.SCHOOL_ADDED_SUCCESS, status: 200 });
+
+        // Ensure the addSchool service function was called with the correct arguments
+    });
+
+    it('should return an error message and status 401 when an error occurs', async () => {
+        // Mock the error response from the school service
+        const errorMessage = 'Internal Server Error';
+        const error = new Error(errorMessage);
+        (schoolService.addSchool as jest.Mock).mockRejectedValue(error);
+
+        // Call the controller function with the mocked Request and Response objects
+        await schoolController.addSchool(req as Request, res as Response);
+
+        // Ensure the status and JSON methods were called with the correct arguments
+        expect(statusMock).toHaveBeenCalledWith(401);
+        expect(jsonMock).toHaveBeenCalledWith({ error: errorMessage });
+
+        // Ensure the addSchool service function was called with the correct arguments
+        expect(schoolService.addSchool).toHaveBeenCalledWith(req);
+    });
+});
+
+describe('schoolList Controller', () => {
+    let req: Partial<Request>;
+    let res: Partial<Response>;
+    let statusMock: jest.Mock;
+    let jsonMock: jest.Mock;
+
+    beforeEach(() => {
+        req = {}; // Initialize request object
+        statusMock = jest.fn().mockReturnThis(); // Mock status method
+        jsonMock = jest.fn(); // Mock json method
+        res = {
+            status: statusMock,
+            json: jsonMock,
+        };
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mocks after each test
+    });
+
+    it('should return the list of schools successfully', async () => {
+        const mockResponse = {
+            message: messages.FETCH_SCHOOL_LIST_SUCCESS,
+            status: true,
+            list: [
+                {
+                    schoolName: 'Test School',
+                    contactPerson: 'John Doe',
+                    contactEmail: 'john@example.com',
+                    contactNumber: '1234567890',
+                    location: {
+                        city: 'City',
+                        state: 'State',
+                        country: 'Country',
+                    },
+                },
+            ],
+        };
+
+        (schoolService.schoolList as jest.Mock).mockResolvedValue(mockResponse);
+
+        await schoolController.schoolList(req as Request, res as Response); // this will be controller
+
+        expect(schoolService.schoolList).toHaveBeenCalled(); // Ensure the service method is called
+        expect(statusMock).toHaveBeenCalledWith(200); // Ensure status method is called with 200
+        expect(jsonMock).toHaveBeenCalledWith(mockResponse); // Ensure json method is called with the correct response
+    });
+    // this will handle catch error
+    it('should return error message and status 401 on failure', async () => {
+        const errorMessage = 'Internal Server Error';
+        (schoolService.schoolList as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+        await schoolController.schoolList(req as Request, res as Response); // this is the controller
+
+        expect(schoolService.schoolList).toHaveBeenCalled(); // Ensure the service method is called
+        expect(statusMock).toHaveBeenCalledWith(401); // Ensure status method is called with 401
+        expect(jsonMock).toHaveBeenCalledWith({ error: errorMessage }); // Ensure json method is called with the error message
+    });
+});
+
+describe('Get school by id Controller', () => {
+    let req: Partial<Request>;
+    let res: Partial<Response>;
+    let statusMock: jest.Mock;
+    let jsonMock: jest.Mock;
+
+    beforeEach(() => {
+        req = {}; // Initialize request object
+        statusMock = jest.fn().mockReturnThis(); // Mock status method
+        jsonMock = jest.fn(); // Mock json method
+        res = {
+            status: statusMock,
+            json: jsonMock,
+        };
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mocks after each test
+    });
+
+    it('should return the schools successfully', async () => {
+        const mockResponse = {
+            message: messages.FETCH_SCHOOL,
+            status: true,
+        };
+
+        (schoolService.getSchoolById as jest.Mock).mockResolvedValue(mockResponse);
+
+        await schoolController.getSchoolById(req as Request, res as Response); // this will be controller
+
+        expect(schoolService.getSchoolById).toHaveBeenCalled(); // Ensure the service method is called
+        expect(statusMock).toHaveBeenCalledWith(200); // Ensure status method is called with 200
+        expect(jsonMock).toHaveBeenCalledWith(mockResponse); // Ensure json method is called with the correct response
+    });
+    // this will handle catch error
+    it('should return error message and status 401 on failure', async () => {
+        const errorMessage = 'Internal Server Error';
+        (schoolService.getSchoolById as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+        await schoolController.getSchoolById(req as Request, res as Response); // this is the controller
+
+        expect(schoolService.getSchoolById).toHaveBeenCalled(); // Ensure the service method is called
+        expect(statusMock).toHaveBeenCalledWith(401); // Ensure status method is called with 401
+        expect(jsonMock).toHaveBeenCalledWith({ error: errorMessage }); // Ensure json method is called with the error message
+    });
+});
