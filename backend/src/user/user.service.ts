@@ -46,7 +46,7 @@ const deleteUser = async (id: string) => {
     try {
         const user = await userModel.findOne({ _id: id });
         if (!user) return { success: false, message: messages.USER_NOT_FOUND };
-        if (user?.userType === 'SA') return { success: false, message: messages.SUPER_ADMIN_NOT_DEACTIVATE };
+        if (user?.userType === 'SA') return { success: false, message: messages.YOU_CAN_NOT_DELETE_SUPER_ADMIN };
 
         if (!user?.isDeleted) {
             const result = await userModel.updateOne({ _id: id }, { $set: { isDeleted: true } });

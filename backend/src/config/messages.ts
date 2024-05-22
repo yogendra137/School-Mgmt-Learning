@@ -9,7 +9,9 @@ export default {
     INTERNAL_SERVER_ERROR: 'Internal Server Error',
     TOGGLE_STATUS: 'User toggle successfully',
     SUPER_ADMIN_NOT_DEACTIVATE: "You can't deactivate the super admin",
+    YOU_CAN_NOT_DELETE_SUPER_ADMIN: "You can't delete the super admin",
     LOGIN_SUCCESSFULLY: 'Login successful',
     TOKEN_VERIFIED: 'Token verified successfully',
     TOKEN_UTILIZED: 'Token already utilized',
+    TOKEN_NOT_FOUND: 'Token does not exist',
 };
