@@ -2,7 +2,7 @@ import authService from '../auth.service';
 import UserModel from '../../user/user.model'; // Adjust the import according to your file structure
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import messages from '../../config/messages'; // Assuming messages is an object containing your message strings
+import { messages } from '../../common'; // Assuming messages is an object containing your message strings
 import TokenHistoryModel from '../tokenHistory.model';
 
 jest.mock('../../user/user.model'); // Mock the UserModel
@@ -19,6 +19,8 @@ describe('login function', () => {
         password: 'hashed-password',
         userType: 'user',
     };
+    const ip = '13.7.13.1';
+    const loginPlatform = 'plate-form';
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -27,7 +29,7 @@ describe('login function', () => {
     it('should return USER_NOT_FOUND if the user does not exist', async () => {
         (UserModel.findOne as jest.Mock).mockResolvedValue(null);
 
-        const result = await authService.login(email, password);
+        const result = await authService.login(email, password, ip, loginPlatform);
 
         expect(result).toEqual({
             success: false,
@@ -39,7 +41,7 @@ describe('login function', () => {
         (UserModel.findOne as jest.Mock).mockResolvedValue(user);
         (bcrypt.compareSync as jest.Mock).mockReturnValue(false);
 
-        const result = await authService.login(email, password);
+        const result = await authService.login(email, password, ip, loginPlatform);
 
         expect(result).toEqual({
             success: false,
@@ -53,7 +55,8 @@ describe('login function', () => {
         const token = 'jwt-token';
         (jwt.sign as jest.Mock).mockReturnValue(token);
 
-        const result = await authService.login(email, password);
+        const result = await authService.login(email, password, ip, loginPlatform);
+        console.log('result9999', result);
 
         expect(result).toEqual({
             success: true,
@@ -66,7 +69,7 @@ describe('login function', () => {
         const errorMessage = 'Database error';
         (UserModel.findOne as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-        const result = await authService.login(email, password);
+        const result = await authService.login(email, password, ip, loginPlatform);
 
         expect(result).toEqual({
             success: false,

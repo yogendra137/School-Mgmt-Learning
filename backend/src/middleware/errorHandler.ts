@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import HTTPStatus from '../config/statusCode';
-import messages from '../config/messages';
+import { messages } from '../common';
 interface CustomError extends Error {
     status?: number;
 }

@@ -28,7 +28,6 @@ const getResourceById = async (req: Request, res: Response) => {
             res.status(200).json({ message, status, resource });
         }
     } catch (error: any) {
-        console.log('Error--', error);
         res.status(401).json({ error: error.message });
     }
 };

@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import HTTPStatus from '../config/statusCode';
-import messages from '../config/messages';
+import { messages } from '../common';
 
 const handleValidationErrors = async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const errorsArray = errors.array();
-        let errorMessages: any = {};
+        const errorMessages: any = {};
         errorsArray.forEach((error: any) => {
             if (!errorMessages[error.path]) errorMessages[error.path] = error.msg;
         });

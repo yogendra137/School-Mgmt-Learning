@@ -22,6 +22,11 @@ interface AddSchoolInterface {
         createdBy: string;
         updatedBy: string;
     };
+    user: {
+        _id: string;
+        email: string;
+        userType: string;
+    };
 }
 
 export { SchoolModelInterface, AddSchoolInterface };

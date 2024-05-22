@@ -9,9 +9,7 @@ interface UserModelInterface {
     isActive: boolean;
     profilePic: string;
     haveSkills: string[];
-    medicalExpertise: string[];
-    assignBootCamp: string[];
-    assignMedicalPractitioner: string[];
+    NotificationPreferences: boolean;
     schoolId: string;
     userType: string;
     createdBy: string;
@@ -30,6 +28,14 @@ interface AddUserInterface {
         updatedBy: string;
         createdAt: Date;
         updatedAt: Date;
+    };
+    user: {
+        _id: string;
+        userRole: string;
+        userType: any;
+    };
+    params: {
+        id: string;
     };
 }
 

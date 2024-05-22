@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import authService from './auth.service';
 import HTTPStatus from '../config/statusCode';
 import { decipher } from '../common';
-import log from '../utils/logger';
 interface NewRequest extends Request {
     user?: any;
 }
@@ -10,11 +9,12 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
         const decodedPassword = decipher()(password);
+        const ip: any = req.socket.remoteAddress;
+        const loginPlatform: any = req.headers['user-agent'];
 
-        console.log('decodedPassword', decodedPassword);
-        const result = await authService.login(email, decodedPassword);
+        const result = await authService.login(email, decodedPassword, ip, loginPlatform);
+
         if (result?.success) {
-            console.log('result?.success', result?.success);
             // Determine whether the application is served over HTTPS
             const isSecure = req.secure || process.env.NODE_ENV === 'production';
             res.cookie('token', result.token, {

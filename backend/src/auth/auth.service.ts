@@ -3,9 +3,13 @@ import jwt from 'jsonwebtoken';
 
 import UserModel from '../user/user.model';
 import { UserModelInterface } from '../user/interface';
-import messages from '../config/messages';
+import { messages } from '../common';
 import UserTokenModel from '../usersToken/userToken.model';
-const login = async (email: string, password: string) => {
+import accessLogsModel from '../accessLogs/access.logs.model';
+import mongoose from 'mongoose';
+const ObjectId = mongoose.Types.ObjectId;
+
+const login = async (email: string, password: string, loginIp: any, loginPlatform: any) => {
     try {
         const user: UserModelInterface | null = await UserModel.findOne({ email });
         if (user) {
@@ -15,7 +19,15 @@ const login = async (email: string, password: string) => {
                 { _id: user._id, email: user.email, userType: user.userType },
                 process.env.JWT_PRIVATE_KEY ?? '',
             );
+            console.log('user._id', user._id);
+            await accessLogsModel.findOneAndUpdate(
+                { userId: new ObjectId(user._id) },
+                { $set: { loginIp, loginPlatform, loginDateAndTime: new Date() } },
+                { new: true },
+            );
+
             return { success: true, token, userType: user.userType, message: messages.LOGIN_SUCCESSFULLY };
+
         }
         return {
             success: false,

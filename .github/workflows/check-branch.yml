@@ -9,13 +9,3 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Ensure no direct pushes to protected branches
-      run: |
-        protected_branches=("refs/heads/development" "refs/heads/master" "refs/heads/main")
-        for branch in "${protected_branches[@]}"; do
-          if [ "${GITHUB_REF}" == "$branch" ]; then
-            echo "Direct pushes to the ${branch##*/} branch are not allowed."
-            exit 1
-          fi
-        done

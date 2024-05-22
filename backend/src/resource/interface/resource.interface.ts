@@ -10,7 +10,7 @@ interface ResourceModelInterface {
 }
 interface AddResourceInterface {
     body: {
-        filename: string;
+        fileName: string;
         title: string;
         description: string;
         tags: string[];
@@ -22,5 +22,9 @@ interface AddResourceInterface {
     };
     files: any;
     query: { status: string };
+    user: {
+        _id: string;
+        userType: string;
+    };
 }
 export { ResourceModelInterface, AddResourceInterface };
