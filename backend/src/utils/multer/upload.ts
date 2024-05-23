@@ -95,19 +95,8 @@ const storage = multer.diskStorage({
 });
 
 function sanitizeFile(file: Express.Multer.File, cb: multer.FileFilterCallback) {
-    const allowedExts = ['.png', '.jpg', '.jpeg', '.gif', '.doc', '.docx', '.pdf', '.csv', '.webm'];
-    const allowedMimeTypes = [
-        'image/png',
-        'image/jpeg',
-        'image/jpg',
-        'image/gif',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/pdf',
-        'application/csv',
-        'text/csv',
-        'video/webm',
-    ];
+    const allowedExts = ['.png', '.jpg', '.doc', '.docx', '.pdf'];
+    const allowedMimeTypes = ['image/png', 'image/jpg', 'application/msword', 'application/pdf', ,];
 
     const isAllowedExt = allowedExts.includes(path.extname(file.originalname).toLowerCase());
     const isAllowedMimeType = allowedMimeTypes.includes(file.mimetype);

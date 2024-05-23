@@ -131,7 +131,7 @@ describe('deleteUser', () => {
 
         expect(result).toEqual({
             success: false,
-            message: messages.SUPER_ADMIN_NOT_DEACTIVATE,
+            message: messages.YOU_CAN_NOT_DELETE_SUPER_ADMIN,
         });
     });
 
