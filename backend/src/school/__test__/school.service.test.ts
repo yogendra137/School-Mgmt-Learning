@@ -1,6 +1,7 @@
 import schoolService from '../school.service';
 import schoolModel from '../school.model'; // Import your school model
 import { messages } from '../../common'; // Import your messages
+import httpsStatusCode from '../../config/statusCode';
 
 jest.mock('../school.model');
 // Add school test cases
@@ -94,7 +95,7 @@ describe('schoolList', () => {
 
         expect(result).toEqual({
             message: messages.SOMETHING_WENT_WRONG,
-            status: false,
+            status: 500,
         });
     });
 
@@ -118,12 +119,11 @@ describe('schoolList', () => {
         // Call the service function with a mock user
         const mockUser = { _id: 'mockUserId' };
         const result = await schoolService.schoolList(mockUser);
-        console.log('result-----');
 
         // Ensure the find method was called with the correct arguments
         expect(schoolModel.find).toHaveBeenCalledWith(
-            {},
-            { schoolName: 1, contactPerson: 1, contactEmail: 1, contactNumber: 1, location: 1 },
+            { isDeleted: false },
+            { schoolName: 1, contactPerson: 1, contactEmail: 1, contactNumber: 1, location: 1, isActive: 1 },
         );
 
         // Ensure the result matches the expected output
@@ -194,7 +194,7 @@ describe('getSchoolById', () => {
         });
 
         // Ensure the findOne method was called with the correct arguments
-        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: '123' });
+        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: '123', isDeleted: false });
     });
 
     it('should return a 404 status when the school is not found', async () => {
@@ -207,11 +207,11 @@ describe('getSchoolById', () => {
 
         expect(result).toEqual({
             message: messages.NOT_FOUND.replace('Item', 'School'),
-            status: false,
+            status: 404,
         });
 
         // Ensure the findOne method was called with the correct arguments
-        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: 'nonExistingId' });
+        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: 'nonExistingId', isDeleted: false });
     });
 
     it('should return an error message when no user is provided', async () => {
@@ -219,7 +219,7 @@ describe('getSchoolById', () => {
 
         expect(result).toEqual({
             message: messages.SOMETHING_WENT_WRONG,
-            status: false,
+            status: 500,
         });
     });
 
@@ -239,6 +239,95 @@ describe('getSchoolById', () => {
         });
 
         // Ensure the findOne method was called with the correct arguments
-        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: '123' });
+        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: '123', isDeleted: false });
+    });
+});
+
+describe('deleteSchool', () => {
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mocks after each test
+    });
+    const mockSchool = {
+        schoolName: 'Test School',
+        contactPerson: 'John Doe',
+        contactEmail: 'john@example.com',
+        contactNumber: '1234567890',
+        location: {
+            city: 'City',
+            state: 'State',
+            country: 'Country',
+        },
+    };
+
+    it('should return an error message when no user is provided', async () => {
+        const result = await schoolService.schoolList(null);
+
+        expect(result).toEqual({
+            message: messages.SOMETHING_WENT_WRONG,
+            status: 500,
+        });
+    });
+
+    it('should return a success message and status 200 when the school is successfully deleted', async () => {
+        const mockSchool = { _id: 'schoolId', schoolName: 'Test School' };
+        (schoolModel.findOne as jest.Mock).mockResolvedValue(mockSchool);
+        (schoolModel.findOneAndUpdate as jest.Mock).mockResolvedValue(mockSchool);
+
+        const result = await schoolService.deleteSchool('schoolId', { _id: 'userId' });
+
+        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: 'schoolId', isDeleted: false });
+        expect(schoolModel.findOneAndUpdate).toHaveBeenCalledWith(
+            { _id: 'schoolId' },
+            { $set: { isDeleted: true, isActive: false } },
+        );
+        expect(result).toEqual({
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'School'),
+            status: httpsStatusCode.OK,
+        });
+    });
+
+    it('should handle errors and return a 500 status', async () => {
+        const errorMessage = 'Database error';
+        (schoolModel.findOne as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+        const result = await schoolService.deleteSchool('schoolId', { _id: 'userId' });
+
+        expect(result).toEqual({
+            success: false,
+            status: httpsStatusCode.INTERNAL_SERVER_ERROR,
+            message: errorMessage,
+        });
+
+        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: 'schoolId', isDeleted: false });
+    });
+});
+
+describe('activeAndDeActiveSchool service', () => {
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mocks after each test
+    });
+
+    it('should activate the school and return success message with status 200', async () => {
+        // Mock schoolId and user object with SA userType
+        const schoolId = 'school123';
+        const user = { _id: 'userId', userType: 'SA' };
+
+        // Mock the findOneAndUpdate method to succeed
+        (schoolModel.findOneAndUpdate as jest.Mock).mockResolvedValue(schoolId);
+
+        // Call the service function to activate the school
+        const result = await schoolService.activeAndDeActiveSchool(schoolId, user, true);
+
+        // Verify the result
+        expect(result).toEqual({
+            message: messages.CHANGE_STATUS_SUCCESS.replace('Item', 'School'),
+            status: httpsStatusCode.OK,
+        });
+
+        // Ensure that findOneAndUpdate is called with the correct parameters
+        expect(schoolModel.findOneAndUpdate).toHaveBeenCalledWith(
+            { _id: schoolId },
+            { $set: { isActive: true }, updatedBy: user._id },
+        );
     });
 });

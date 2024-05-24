@@ -60,9 +60,9 @@ const schoolList = async (user: any) => {
         }
         const list = await schoolModel.find(
             { isDeleted: false },
-            { schoolName: 1, contactPerson: 1, contactEmail: 1, contactNumber: 1, location: 1 },
+            { schoolName: 1, contactPerson: 1, contactEmail: 1, contactNumber: 1, location: 1, isActive: 1 },
         );
-        if (!list) {
+        if (list.length === 0) {
             return {
                 message: messages.NOT_FOUND.replace('Item', 'School'),
                 status: httpsStatusCode.NOT_FOUND,
@@ -93,7 +93,7 @@ const getSchoolById = async (schoolId: any, user: any) => {
             };
         }
         const school = await schoolModel.findOne({ _id: schoolId, isDeleted: false });
-        if (!school) {
+        if (!school || school == null) {
             return {
                 message: messages.NOT_FOUND.replace('Item', 'School'),
                 status: httpsStatusCode.NOT_FOUND,
@@ -130,7 +130,7 @@ const deleteSchool = async (schoolId: any, user: any) => {
                 status: httpsStatusCode.NOT_FOUND,
             };
         }
-        await schoolModel.findOneAndUpdate({ _id: schoolId }, { $set: { isDeleted: true } });
+        await schoolModel.findOneAndUpdate({ _id: schoolId }, { $set: { isDeleted: true, isActive: false } });
         return {
             message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'School'),
             status: httpsStatusCode.OK,
