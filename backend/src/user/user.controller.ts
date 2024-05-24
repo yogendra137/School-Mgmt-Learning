@@ -67,4 +67,17 @@ const changeUserStatus = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
-export default { addUser, changeUserStatus, deleteUser };
+const list = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { query } = req;
+        const { user }: any = req;
+        const result = await userService.list(query, user);
+        if (result) {
+            const { message, status, list } = result;
+            res.status(typeof status === 'number' ? status : 200).json({ message, status, list });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+export default { addUser, changeUserStatus, deleteUser, list };
