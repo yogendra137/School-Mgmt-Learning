@@ -2,7 +2,8 @@ interface TestModelInterface {
     testName: string;
     skills: string[];
     isActive: boolean;
-    Description: string;
+    isDeleted: boolean;
+    description: string;
     duration: string;
     createdBy: string;
     updatedBy: string;

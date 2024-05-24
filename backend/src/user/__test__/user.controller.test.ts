@@ -119,7 +119,7 @@ describe('deleteUserController', () => {
 
     it('should return success message and status 200', async () => {
         const mockResponse = {
-            message: messages.USER_DELETED,
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'User'),
             status: 200,
         };
 
@@ -129,7 +129,10 @@ describe('deleteUserController', () => {
 
         expect(userService.deleteUser).toHaveBeenCalledWith(req);
         expect(statusMock).toHaveBeenCalledWith(200);
-        expect(jsonMock).toHaveBeenCalledWith({ message: messages.USER_DELETED, status: 200 });
+        expect(jsonMock).toHaveBeenCalledWith({
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'User'),
+            status: 200,
+        });
     });
 
     // it('should return an error message and status 401 when an error occurs', async () => {

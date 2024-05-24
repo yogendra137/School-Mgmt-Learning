@@ -83,7 +83,7 @@ describe('testList', () => {
 
         expect(result).toEqual({
             message: messages.SOMETHING_WENT_WRONG,
-            status: false,
+            status: 500,
         });
     });
 
@@ -124,7 +124,7 @@ describe('testList', () => {
 
         // Ensure the find method was called with the correct arguments
         expect(testTypeModel.find).toHaveBeenCalledWith(
-            {},
+            { isDeleted: false },
             { testName: 1, skills: 1, duration: 1, isActive: 1, description: 1 },
         );
 

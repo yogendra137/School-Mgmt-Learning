@@ -188,7 +188,7 @@ describe('getSchoolById', () => {
         const result = await schoolService.getSchoolById('123', mockUser);
 
         expect(result).toEqual({
-            message: messages.FETCH_SCHOOL,
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'School'),
             status: 200,
             school: mockSchool,
         });

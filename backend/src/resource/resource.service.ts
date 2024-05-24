@@ -48,7 +48,6 @@ const addResource = async (resourceData: any) => {
         }
     } catch (error) {
         console.log('error', error);
-        // Handle error appropriately
         return { success: false, message: (error as Error).message };
     }
 };
@@ -57,18 +56,23 @@ const addResource = async (resourceData: any) => {
  * @param resourceId
  * @returns
  */
-const getResourceById = async (resourceId: any) => {
+const getResourceById = async (resourceId: any, user: any) => {
     try {
-        const { id }: any = resourceId;
-        const resource = await resourceModel.findOne({ _id: id });
-        if (!resource) {
+        if (!user) {
             return {
                 message: messages.SOMETHING_WENT_WRONG,
-                status: false,
+                status: httpsStatusCode.INTERNAL_SERVER_ERROR,
+            };
+        }
+        const resource = await resourceModel.findOne({ _id: resourceId, isDeleted: false });
+        if (!resource) {
+            return {
+                message: messages.NOT_FOUND.replace('Item', 'Resource'),
+                status: httpsStatusCode.NOT_FOUND,
             };
         }
         return {
-            message: messages.FETCH_RESOURCE_SUCCESS,
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'Resource'),
             status: httpsStatusCode.OK,
             resource,
         };
@@ -115,7 +119,7 @@ const editResource = async (resourceData: any) => {
             },
         );
         return {
-            message: messages.UPDATE_RESOURCE_SUCCESS,
+            message: messages.ITEM_UPDATED_SUCCESS.replace('Item', 'Resource'),
             status: httpsStatusCode.OK,
         };
     } catch (error) {
@@ -170,7 +174,7 @@ const deleteResource = async (resourceData: any) => {
         }
 
         return {
-            message: messages.RESOURCE_DELETE_SUCCESS,
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'Resource'),
             status: httpsStatusCode.OK,
         };
     } catch (error) {
@@ -186,21 +190,20 @@ const deleteResource = async (resourceData: any) => {
  * @returns
  * pass 1,0 in status so according to this manage active and deActive status respectively
  */
-const activeAndDeActiveResource = async (resourceData: any) => {
+const activeAndDeActiveResource = async (resourceId: string, status: boolean, user: any) => {
     try {
-        const {
-            params: { id },
-            query: { status },
-            user: { _id, userType },
-        }: AddResourceInterface = resourceData;
+        const { _id, userType } = user;
         if (userType === 'SA') {
-            if (String(status) === '1') {
-                await resourceModel.findOneAndUpdate({ _id: id }, { $set: { isActive: true }, updatedBy: _id });
+            if (status === true) {
+                await resourceModel.findOneAndUpdate({ _id: resourceId }, { $set: { isActive: true }, updatedBy: _id });
             } else {
-                await resourceModel.findOneAndUpdate({ _id: id }, { $set: { isActive: false }, updatedBy: _id });
+                await resourceModel.findOneAndUpdate(
+                    { _id: resourceId },
+                    { $set: { isActive: false }, updatedBy: _id },
+                );
             }
             return {
-                message: messages.CHANGE_RESOURCE_STATUS,
+                message: messages.CHANGE_STATUS_SUCCESS.replace('Item', 'Resource'),
                 status: httpsStatusCode.OK,
             };
         } else {

@@ -117,7 +117,7 @@ describe('getResourceById Controller', () => {
     it('should return the resource with a success message and status 200', async () => {
         const mockResource = { _id: '123', title: 'Test Resource' };
         (resourceService.getResourceById as jest.Mock).mockResolvedValue({
-            message: messages.FETCH_RESOURCE_SUCCESS,
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'Resource'),
             status: 200,
             resource: mockResource,
         });
@@ -126,7 +126,7 @@ describe('getResourceById Controller', () => {
 
         expect(statusMock).toHaveBeenCalledWith(200);
         expect(jsonMock).toHaveBeenCalledWith({
-            message: messages.FETCH_RESOURCE_SUCCESS,
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'Resource'),
             status: 200,
             resource: mockResource,
         });
@@ -141,7 +141,7 @@ describe('getResourceById Controller', () => {
 
         expect(statusMock).toHaveBeenCalledWith(401); // return expected status
         expect(jsonMock).toHaveBeenCalledWith({ error: messages.INTERNAL_SERVER_ERROR });
-        expect(resourceService.getResourceById).toHaveBeenCalledWith(req.params);
+        expect(resourceService.getResourceById).toHaveBeenCalledWith(req.params, req.user);
     });
 });
 
@@ -172,7 +172,7 @@ describe('deleteResource controller', () => {
 
     it('should return success message and status 200', async () => {
         const mockResponse = {
-            message: messages.RESOURCE_DELETE_SUCCESS,
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'Resource'),
             status: 200,
         };
 
@@ -182,7 +182,10 @@ describe('deleteResource controller', () => {
 
         expect(resourceService.deleteResource).toHaveBeenCalledWith(req);
         expect(statusMock).toHaveBeenCalledWith(200);
-        expect(jsonMock).toHaveBeenCalledWith({ message: messages.RESOURCE_DELETE_SUCCESS, status: 200 });
+        expect(jsonMock).toHaveBeenCalledWith({
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'Resource'),
+            status: 200,
+        });
     });
 
     it('should handle errors gracefully and return status 401', async () => {
@@ -220,7 +223,7 @@ describe('Get resource by id Controller', () => {
 
     it('should return the resource successfully', async () => {
         const mockResponse = {
-            message: messages.FETCH_SCHOOL,
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'School'),
             status: true,
         };
 
@@ -267,7 +270,7 @@ describe('activeAndDeActiveResource Controller', () => {
 
     it('should return the message and status successfully', async () => {
         const mockResponse = {
-            message: messages.CHANGE_RESOURCE_STATUS,
+            message: messages.CHANGE_STATUS_SUCCESS.replace('Item', 'Resource'),
             status: true,
         };
 

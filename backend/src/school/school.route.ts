@@ -17,5 +17,7 @@ router.post(
 );
 router.get('/list', authenticateToken, schoolController.schoolList);
 router.get('/:id', authenticateToken, schoolController.getSchoolById);
+router.put('/delete/:id', authenticateToken, schoolController.deleteSchool);
+router.put('/change-status/:id', authenticateToken, schoolController.activeAndDeActiveSchool);
 
 export default router;

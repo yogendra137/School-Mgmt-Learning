@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import resourceService from './resource.service';
+import { AddResourceInterface } from './interface/resource.interface';
 /**
  * This controller use for to add resource by admin
  * @param req
@@ -22,10 +23,11 @@ const addResource = async (req: Request, res: Response) => {
 
 const getResourceById = async (req: Request, res: Response) => {
     try {
-        const response: any = await resourceService.getResourceById(req.params);
+        const { params, user }: any = req;
+        const response: any = await resourceService.getResourceById(params.id, user);
         if (response) {
             const { message, status, resource } = response;
-            res.status(200).json({ message, status, resource });
+            res.status(status).json({ message, status, resource });
         }
     } catch (error: any) {
         res.status(401).json({ error: error.message });
@@ -58,22 +60,22 @@ const deleteResource = async (req: Request, res: Response) => {
     }
 };
 
-// const getAllResources = async (req: Request, res: Response) => {
-//     try {
-//         const response: any = await resourceService.getAllResources();
-//         if (response) {
-//             const { message, status ,list} = response;
-//             res.status(200).json({ message, status ,list });
-//         }
-//     } catch (error: any) {
-//         console.log('Error--', error);
-//         res.status(401).json({ error: error.message });
-//     }
-// };
-
 const activeAndDeActiveResource = async (req: Request, res: Response) => {
     try {
-        const response: any = await resourceService.activeAndDeActiveResource(req);
+        const {
+            params: { id },
+            query: { status },
+        } = req;
+        const { user }: any = req;
+        let booleanStatus;
+        if (status === '0') {
+            booleanStatus = false;
+        } else if (status === '1') {
+            booleanStatus = true;
+        } else {
+            throw new Error("Invalid status value. Expected '0' or '1'.");
+        }
+        const response: any = await resourceService.activeAndDeActiveResource(id, booleanStatus, user);
         if (response) {
             const { message, status, list } = response;
             res.status(200).json({ message, status, list });

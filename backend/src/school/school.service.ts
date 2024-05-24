@@ -46,25 +46,26 @@ const addSchool = async (schoolData: any) => {
     }
 };
 /**
- * This function is use for the get list of school
- * @returns status,message and list
+ * This api is use for to get the lost of schools
+ * @param user
+ * @returns
  */
 const schoolList = async (user: any) => {
     try {
         if (!user) {
             return {
                 message: messages.SOMETHING_WENT_WRONG,
-                status: false,
+                status: httpsStatusCode.INTERNAL_SERVER_ERROR,
             };
         }
         const list = await schoolModel.find(
-            {},
+            { isDeleted: false },
             { schoolName: 1, contactPerson: 1, contactEmail: 1, contactNumber: 1, location: 1 },
         );
         if (!list) {
             return {
                 message: messages.NOT_FOUND.replace('Item', 'School'),
-                status: false,
+                status: httpsStatusCode.NOT_FOUND,
             };
         }
         return {
@@ -77,27 +78,91 @@ const schoolList = async (user: any) => {
         return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
     }
 };
-
+/**
+ * This api is use for to get school by id
+ * @param schoolId
+ * @param user
+ * @returns
+ */
 const getSchoolById = async (schoolId: any, user: any) => {
     try {
         if (!user) {
             return {
                 message: messages.SOMETHING_WENT_WRONG,
-                status: false,
+                status: httpsStatusCode.INTERNAL_SERVER_ERROR,
             };
         }
-        const school = await schoolModel.findOne({ _id: schoolId });
+        const school = await schoolModel.findOne({ _id: schoolId, isDeleted: false });
         if (!school) {
             return {
                 message: messages.NOT_FOUND.replace('Item', 'School'),
-                status: false,
+                status: httpsStatusCode.NOT_FOUND,
             };
         }
         return {
-            message: messages.FETCH_SCHOOL,
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'School'),
             status: httpsStatusCode.OK,
             school,
         };
+    } catch (error) {
+        console.log('error', error);
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
+    }
+};
+/**
+ * This function is use for to delete the school
+ * @param schoolId
+ * @param user
+ * @returns
+ */
+const deleteSchool = async (schoolId: any, user: any) => {
+    try {
+        if (!user) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: httpsStatusCode.INTERNAL_SERVER_ERROR,
+            };
+        }
+        const getSchool = await schoolModel.findOne({ _id: schoolId, isDeleted: false });
+        if (!getSchool) {
+            return {
+                message: messages.NOT_FOUND.replace('Item', 'School'),
+                status: httpsStatusCode.NOT_FOUND,
+            };
+        }
+        await schoolModel.findOneAndUpdate({ _id: schoolId }, { $set: { isDeleted: true } });
+        return {
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'School'),
+            status: httpsStatusCode.OK,
+        };
+    } catch (error) {
+        console.log('error', error);
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
+    }
+};
+/**
+ * This api is use for to change the status of school
+ * @param schoolId
+ * @param user
+ * @param status
+ * @returns
+ */
+const activeAndDeActiveSchool = async (schoolId: any, user: any, status: boolean) => {
+    try {
+        const { userType, _id } = user;
+        if (userType === 'SA') {
+            if (status === true) {
+                await schoolModel.findOneAndUpdate({ _id: schoolId }, { $set: { isActive: true }, updatedBy: _id });
+            } else {
+                await schoolModel.findOneAndUpdate({ _id: schoolId }, { $set: { isActive: false }, updatedBy: _id });
+            }
+            return {
+                message: messages.CHANGE_STATUS_SUCCESS.replace('Item', 'School'),
+                status: httpsStatusCode.OK,
+            };
+        } else {
+            throw new Error('User is not authorized'); // Throw an error if user is not SA
+        }
     } catch (error) {
         console.log('error', error);
         return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
@@ -108,4 +173,6 @@ export default {
     addSchool,
     schoolList,
     getSchoolById,
+    deleteSchool,
+    activeAndDeActiveSchool,
 };

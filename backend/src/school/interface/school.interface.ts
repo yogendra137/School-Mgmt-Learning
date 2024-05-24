@@ -5,6 +5,7 @@ interface SchoolModelInterface {
     contactNumber: string;
     location: object;
     isActive: boolean;
+    isDeleted: boolean;
     schoolLogo: string;
     createdBy: string;
     updatedBy: string;

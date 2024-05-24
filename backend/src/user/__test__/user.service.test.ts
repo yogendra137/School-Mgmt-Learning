@@ -144,7 +144,7 @@ describe('deleteUser', () => {
 
         expect(result).toEqual({
             success: true,
-            message: messages.USER_DELETED,
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'User'),
             status: 200,
         });
 

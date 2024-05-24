@@ -59,4 +59,47 @@ const getSchoolById = async (req: Request, res: Response) => {
         res.status(401).json({ error: error.message });
     }
 };
-export default { addSchool, schoolList, getSchoolById };
+
+const deleteSchool = async (req: Request, res: Response) => {
+    try {
+        const {
+            params: { id },
+        } = req;
+        const { user }: any = req;
+        const response: any = await schoolService.deleteSchool(id, user);
+        if (response) {
+            const { message, status } = response;
+            res.status(status).json({ message, status });
+        }
+    } catch (error: any) {
+        console.log('Error--', error);
+        res.status(401).json({ error: error.message });
+    }
+};
+
+const activeAndDeActiveSchool = async (req: Request, res: Response) => {
+    try {
+        const {
+            params: { id },
+            query: { status },
+        } = req;
+        const { user }: any = req;
+        let booleanStatus;
+        if (status === '0') {
+            booleanStatus = false;
+        } else if (status === '1') {
+            booleanStatus = true;
+        } else {
+            throw new Error("Invalid status value. Expected '0' or '1'.");
+        }
+        const response: any = await schoolService.activeAndDeActiveSchool(id, user, booleanStatus);
+        if (response) {
+            const { message, status } = response;
+            res.status(status).json({ message, status });
+        }
+    } catch (error: any) {
+        console.log('Error--', error);
+        res.status(401).json({ error: error.message });
+    }
+};
+export default { addSchool, schoolList, getSchoolById, deleteSchool, activeAndDeActiveSchool };

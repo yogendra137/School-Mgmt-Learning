@@ -15,7 +15,7 @@ router.post(
     handleValidationErrors,
     resourceController.addResource,
 ); // add resource only by Admin
-router.get('/:id', resourceController.getResourceById); // access resource by aby user
+router.get('/:id', authenticateToken, resourceController.getResourceById); // access resource by aby user
 router.put('/update/:id', upload.array('fileName'), authenticateToken, resourceController.editResource); // Update resource by Admin
 router.put('/delete/:id', authenticateToken, resourceController.deleteResource); // delete resource by admin
 router.put('/change-status/:id', authenticateToken, resourceController.activeAndDeActiveResource);

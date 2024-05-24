@@ -14,6 +14,7 @@ const schoolSchema = new Schema<SchoolModelInterface>(
         },
         schoolLogo: { type: String, default: null },
         isActive: { type: Boolean },
+        isDeleted: { type: Boolean, default: false },
         createdBy: { type: String, default: null },
         updatedBy: { type: String, default: null },
     },

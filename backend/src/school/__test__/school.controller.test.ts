@@ -179,7 +179,7 @@ describe('Get school by id Controller', () => {
 
     it('should return the school successfully', async () => {
         const mockResponse = {
-            message: messages.FETCH_SCHOOL,
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'School'),
             status: 200,
             school: { _id: '123', schoolName: 'Test School' },
         };

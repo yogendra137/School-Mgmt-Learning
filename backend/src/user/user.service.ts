@@ -33,6 +33,7 @@ const addUser = async (userData: any) => {
             haveSkills,
             isActive: true,
             userType,
+            SchoolID: userRole === 'SC' ? _id : null, // add this when school adding users
             createdBy: userRole === 'SA' ? _id : null,
             updatedBy: userRole === 'SA' ? _id : null,
         });
@@ -74,7 +75,7 @@ const deleteUser = async (resourceData: any) => {
             const result = await userModel.updateOne({ _id: id }, { $set: { isDeleted: true, updatedBy: _id } });
             if (result.modifiedCount)
                 return {
-                    message: messages.USER_DELETED,
+                    message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'User'),
                     success: true,
                     status: httpStatusCode.OK,
                 };
