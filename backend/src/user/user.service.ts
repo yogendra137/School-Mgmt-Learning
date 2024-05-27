@@ -21,7 +21,7 @@ const addUser = async (userData: any) => {
          * Generate random password
          */
         const decodedPassword = decipher()(password);
-        const password1 = bcrypt.hashSync(decodedPassword, 10);
+        const newDecodedPassword = bcrypt.hashSync(decodedPassword, 10);
         const loginIp = userData.socket.remoteAddress;
         const loginPlatform = userData.headers['user-agent'];
         // console.log('hashedPassword', hashedPassword);
@@ -29,7 +29,7 @@ const addUser = async (userData: any) => {
             name,
             email,
             mobileNo,
-            password: password1,
+            password: newDecodedPassword,
             haveSkills,
             isActive: true,
             userType,
