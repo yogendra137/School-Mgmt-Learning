@@ -12,7 +12,7 @@ const addSchool = async (req: Request, res: Response) => {
         const response: any = await schoolService.addSchool(req);
         if (response) {
             const { message, status } = response;
-            res.status(200).json({ message, status });
+            res.status(status).json({ message, status });
         }
     } catch (error: any) {
         console.log('Error--', error);
@@ -26,10 +26,11 @@ const addSchool = async (req: Request, res: Response) => {
  */
 const schoolList = async (req: Request, res: Response) => {
     try {
-        const response: any = await schoolService.schoolList();
+        const { user }: any = req;
+        const response: any = await schoolService.schoolList(user);
         if (response) {
             const { message, status, list } = response;
-            res.status(200).json({ message, status, list });
+            res.status(status).json({ message, status, list });
         }
     } catch (error: any) {
         console.log('Error--', error);
@@ -44,14 +45,61 @@ const schoolList = async (req: Request, res: Response) => {
  */
 const getSchoolById = async (req: Request, res: Response) => {
     try {
-        const response: any = await schoolService.getSchoolById(req.params);
+        const {
+            params: { id },
+        } = req;
+        const { user }: any = req;
+        const response: any = await schoolService.getSchoolById(id, user);
         if (response) {
             const { message, status, school } = response;
-            res.status(200).json({ message, status, school });
+            res.status(status).json({ message, status, school });
         }
     } catch (error: any) {
         console.log('Error--', error);
         res.status(401).json({ error: error.message });
     }
 };
-export default { addSchool, schoolList, getSchoolById };
+
+const deleteSchool = async (req: Request, res: Response) => {
+    try {
+        const {
+            params: { id },
+        } = req;
+        const { user }: any = req;
+        const response: any = await schoolService.deleteSchool(id, user);
+        if (response) {
+            const { message, status } = response;
+            res.status(status).json({ message, status });
+        }
+    } catch (error: any) {
+        console.log('Error--', error);
+        res.status(401).json({ error: error.message });
+    }
+};
+
+const activeAndDeActiveSchool = async (req: Request, res: Response) => {
+    try {
+        const {
+            params: { id },
+            query: { status },
+        } = req;
+        const { user }: any = req;
+        let booleanStatus;
+        if (status === '0') {
+            booleanStatus = false;
+        } else if (status === '1') {
+            booleanStatus = true;
+        } else {
+            throw new Error("Invalid status value. Expected '0' or '1'.");
+        }
+        const response: any = await schoolService.activeAndDeActiveSchool(id, user, booleanStatus);
+        if (response) {
+            const { message, status } = response;
+            res.status(status).json({ message, status });
+        }
+    } catch (error: any) {
+        console.log('Error--', error);
+        res.status(401).json({ error: error.message });
+    }
+};
+export default { addSchool, schoolList, getSchoolById, deleteSchool, activeAndDeActiveSchool };

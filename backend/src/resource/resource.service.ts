@@ -3,6 +3,7 @@ import { messages } from '../common';
 import { AddResourceInterface } from './interface/resource.interface';
 import resourceModel from './resource.model';
 import fs from 'fs';
+import httpsStatusCode from '../config/statusCode';
 
 /**
  * This function using for to add resources with respective files and create entries in DB
@@ -36,18 +37,17 @@ const addResource = async (resourceData: any) => {
             }
             return {
                 message: messages.RESOURCE_ADDED_SUCCESS,
-                status: 200,
+                status: httpsStatusCode.OK,
                 resourceEntries, // Return the created resource entries if needed
             };
         } else {
             return {
                 message: messages.NOT_PERMISSION,
-                status: 403,
+                status: httpsStatusCode.FORBIDDEN,
             };
         }
     } catch (error) {
         console.log('error', error);
-        // Handle error appropriately
         return { success: false, message: (error as Error).message };
     }
 };
@@ -56,24 +56,29 @@ const addResource = async (resourceData: any) => {
  * @param resourceId
  * @returns
  */
-const getResourceById = async (resourceId: any) => {
+const getResourceById = async (resourceId: any, user: any) => {
     try {
-        const { id }: any = resourceId;
-        const resource = await resourceModel.findOne({ _id: id });
-        if (!resource) {
+        if (!user) {
             return {
                 message: messages.SOMETHING_WENT_WRONG,
-                status: false,
+                status: httpsStatusCode.INTERNAL_SERVER_ERROR,
+            };
+        }
+        const resource = await resourceModel.findOne({ _id: resourceId, isDeleted: false });
+        if (!resource) {
+            return {
+                message: messages.NOT_FOUND.replace('Item', 'Resource'),
+                status: httpsStatusCode.NOT_FOUND,
             };
         }
         return {
-            message: messages.FETCH_RESOURCE_SUCCESS,
-            status: 200,
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'Resource'),
+            status: httpsStatusCode.OK,
             resource,
         };
     } catch (error) {
         console.log('error ', error);
-        return { success: false, status: 500, message: (error as Error).message };
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
     }
 };
 /**
@@ -114,12 +119,12 @@ const editResource = async (resourceData: any) => {
             },
         );
         return {
-            message: messages.UPDATE_RESOURCE_SUCCESS,
-            status: 200,
+            message: messages.ITEM_UPDATED_SUCCESS.replace('Item', 'Resource'),
+            status: httpsStatusCode.OK,
         };
     } catch (error) {
         console.log('error', error);
-        return { success: false, status: 500, message: (error as Error).message };
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
     }
 };
 /**
@@ -169,12 +174,12 @@ const deleteResource = async (resourceData: any) => {
         }
 
         return {
-            message: messages.RESOURCE_DELETE_SUCCESS,
-            status: 200,
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'Resource'),
+            status: httpsStatusCode.OK,
         };
     } catch (error) {
         console.log('error', error);
-        return { success: false, status: 500, message: (error as Error).message };
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
     }
 };
 
@@ -185,33 +190,28 @@ const deleteResource = async (resourceData: any) => {
  * @returns
  * pass 1,0 in status so according to this manage active and deActive status respectively
  */
-const activeAndDeActiveResource = async (resourceData: any) => {
+const activeAndDeActiveResource = async (resourceId: string, status: boolean, user: any) => {
     try {
-        const {
-            params: { id },
-            query: { status },
-            user: { _id, userType },
-        }: AddResourceInterface = resourceData;
-        console.log('userType', userType, _id);
-        console.log('status', status, typeof Boolean(status), Boolean(status), typeof true);
+        const { _id, userType } = user;
         if (userType === 'SA') {
-            if (String(status) === '1') {
-                console.log('vvvvvv');
-                await resourceModel.findOneAndUpdate({ _id: id }, { $set: { isActive: true }, updatedBy: _id });
+            if (status === true) {
+                await resourceModel.findOneAndUpdate({ _id: resourceId }, { $set: { isActive: true }, updatedBy: _id });
             } else {
-                console.log('else');
-                await resourceModel.findOneAndUpdate({ _id: id }, { $set: { isActive: false }, updatedBy: _id });
+                await resourceModel.findOneAndUpdate(
+                    { _id: resourceId },
+                    { $set: { isActive: false }, updatedBy: _id },
+                );
             }
             return {
-                message: messages.CHANGE_RESOURCE_STATUS,
-                status: 200,
+                message: messages.CHANGE_STATUS_SUCCESS.replace('Item', 'Resource'),
+                status: httpsStatusCode.OK,
             };
         } else {
             throw new Error('User is not authorized'); // Throw an error if user is not SA
         }
     } catch (error) {
         console.log(error, 'error');
-        return { success: false, status: 500, message: (error as Error).message };
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
     }
 };
 

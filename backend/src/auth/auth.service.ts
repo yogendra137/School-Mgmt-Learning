@@ -3,10 +3,12 @@ import jwt from 'jsonwebtoken';
 
 import UserModel from '../user/user.model';
 import { UserModelInterface } from '../user/interface';
-import { messages } from '../common';
 import UserTokenModel from '../usersToken/userToken.model';
+import { emailSubjects, emailTemplateConstants, messages } from '../common';
+// import TokenHistoryModel from './tokenHistory.model';
 import accessLogsModel from '../accessLogs/access.logs.model';
 import mongoose from 'mongoose';
+import sendEmail from '../utils/email/sendEmail';
 const ObjectId = mongoose.Types.ObjectId;
 
 const login = async (email: string, password: string, loginIp: any, loginPlatform: any) => {
@@ -17,7 +19,7 @@ const login = async (email: string, password: string, loginIp: any, loginPlatfor
                 return { success: false, message: messages.PASSWORD_INVALID };
             const token = jwt.sign(
                 { _id: user._id, email: user.email, userType: user.userType },
-                process.env.JWT_PRIVATE_KEY ?? ''
+                process.env.JWT_PRIVATE_KEY ?? '',
             );
             console.log('user._id', user._id);
             await accessLogsModel.findOneAndUpdate(
@@ -27,7 +29,6 @@ const login = async (email: string, password: string, loginIp: any, loginPlatfor
             );
 
             return { success: true, token, userType: user.userType, message: messages.LOGIN_SUCCESSFULLY };
-
         }
         return {
             success: false,
@@ -44,6 +45,7 @@ const forgotPassword = async (email: string) => {
         if (user) {
             const token = jwt.sign({ email: user.email, userType: user.userType }, process.env.JWT_PRIVATE_KEY ?? '');
             await UserTokenModel.create({ token, userId: user._id, tokenType: 'FP', isUtilized: false });
+            await sendEmail(user.email, emailSubjects.FORGOT_PASSWORD, 'null', emailTemplateConstants.FORGOT_PASSWORD);
             return { success: true, message: messages.EMAIL_SENT, token };
         }
         return {
@@ -96,7 +98,7 @@ const resetPassword = async (email: string, password: string) => {
             await UserModel.updateOne({ email }, { $set: { password: user.password } });
             const token = jwt.sign(
                 { email: user.email, userType: user.userType, _id: user._id },
-                process.env.JWT_PRIVATE_KEY ?? ''
+                process.env.JWT_PRIVATE_KEY ?? '',
             );
 
             return { success: true, token, message: messages.PASSWORD_UPDATED };

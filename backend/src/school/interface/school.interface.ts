@@ -5,6 +5,8 @@ interface SchoolModelInterface {
     contactNumber: string;
     location: object;
     isActive: boolean;
+    isDeleted: boolean;
+    schoolLogo: string;
     createdBy: string;
     updatedBy: string;
 }
@@ -15,6 +17,7 @@ interface AddSchoolInterface {
         contactPerson: string;
         contactEmail: string;
         contactNumber: string;
+        schoolLogo: string;
         city: string;
         state: string;
         country: string;
@@ -27,6 +30,7 @@ interface AddSchoolInterface {
         email: string;
         userType: string;
     };
+    file: any;
 }
 
 export { SchoolModelInterface, AddSchoolInterface };
