@@ -1,6 +1,7 @@
 import { messages } from '../common';
-import { AddTestInterface } from './interface';
-import testModel from './testType.model';
+import { AddTestInterface, TestModelInterface } from './interface';
+import testTypeModel from './testType.model';
+import httpsStatusCode from '../config/statusCode';
 /**
  * This function is use for add test
  * @param testData
@@ -13,7 +14,7 @@ const addTestType = async (testData: any) => {
             user: { _id, userType },
         }: AddTestInterface = testData;
         if (userType === 'SA') {
-            await testModel.create({
+            await testTypeModel.create({
                 testName,
                 skills,
                 description,
@@ -24,12 +25,12 @@ const addTestType = async (testData: any) => {
             });
             return {
                 message: messages.TEST_ADDED_SUCCESS,
-                status: 200,
+                status: httpsStatusCode.OK,
             };
         } else {
             return {
                 message: messages.NOT_PERMISSION,
-                status: 403,
+                status: httpsStatusCode.FORBIDDEN,
             };
         }
     } catch (error) {
@@ -41,20 +42,126 @@ const addTestType = async (testData: any) => {
  * This function is use for get list of test
  * @returns list
  */
-const testList = async () => {
+const testList = async (user: any) => {
     try {
-        const list = await testModel.find({}, { testName: 1, skills: 1, duration: 1, isActive: 1, description: 1 });
+        if (!user) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: httpsStatusCode.INTERNAL_SERVER_ERROR,
+            };
+        }
+        const list = await testTypeModel.find(
+            { isDeleted: false },
+            { testName: 1, skills: 1, duration: 1, isActive: 1, description: 1 },
+        );
+        if (!list) {
+            return {
+                message: messages.NOT_FOUND.replace('Item', 'test'),
+                status: httpsStatusCode.NOT_FOUND,
+            };
+        }
         return {
             message: messages.FETCH_TEST_LIST,
-            status: 200,
+            status: httpsStatusCode.OK,
             list,
         };
     } catch (error) {
         console.log('error', error);
-        return { success: false, status: 500, message: (error as Error).message };
+        return { success: false, status: httpsStatusCode.INTERNAL_SERVER_ERROR, message: (error as Error).message };
+    }
+};
+/**
+ * This service is use for to delete the test type
+ * @param user
+ * @param id
+ * @returns
+ */
+const deleteTestType = async (user: any, id: string) => {
+    try {
+        if (!user) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: httpsStatusCode.INTERNAL_SERVER_ERROR,
+            };
+        }
+        const getTestType = await testTypeModel.findOne({ _id: id, isDeleted: false });
+        if (!getTestType) {
+            return {
+                message: messages.NOT_FOUND.replace('Item', 'Test type'),
+                status: httpsStatusCode.NOT_FOUND,
+            };
+        }
+        await testTypeModel.findOneAndUpdate({ _id: id }, { $set: { isDeleted: true } });
+        return {
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'Test type'),
+            status: httpsStatusCode.OK,
+        };
+    } catch (err) {
+        console.log('err', err);
+    }
+};
+/**
+ * This service is use for to update test type
+ * @param user
+ * @param body
+ * @param id
+ * @returns
+ */
+const updateTestType = async (user: any, body: TestModelInterface, id: string) => {
+    try {
+        if (!user) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: httpsStatusCode.INTERNAL_SERVER_ERROR,
+            };
+        }
+        const { testName, description, skills, duration } = body;
+        await testTypeModel.findOneAndUpdate(
+            { _id: id, isDeleted: false },
+            { $set: { testName, description, skills, duration } },
+        );
+        return {
+            message: messages.ITEM_UPDATED_SUCCESS.replace('Item', 'Test type'),
+            status: httpsStatusCode.OK,
+        };
+    } catch (error) {
+        return { success: false, message: (error as Error).message };
+    }
+};
+/**
+ * This function is call to get test type by id
+ * @param user
+ * @param id
+ * @returns
+ */
+const getTestTypeById = async (user: any, id: string) => {
+    try {
+        if (!user) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: httpsStatusCode.INTERNAL_SERVER_ERROR,
+            };
+        }
+        const testType = await testTypeModel.findOne({ _id: id, isDeleted: false });
+        if (!testType) {
+            return {
+                message: messages.NOT_FOUND.replace('Item', 'Test type'),
+                status: httpsStatusCode.NOT_FOUND,
+            };
+        }
+        return {
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'Test type'),
+            status: httpsStatusCode.OK,
+            testType,
+        };
+    } catch (error) {
+        return { success: false, message: (error as Error).message };
     }
 };
 export default {
     addTestType,
     testList,
+    deleteTestType,
+    updateTestType,
+    getTestTypeById,
 };

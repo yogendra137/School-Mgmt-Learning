@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { messages } from '../../common'; // Import your messages
 import userService from '../user.service';
 import userController from '../user.controller';
@@ -89,4 +89,66 @@ describe('addUserController', () => {
         // Ensure the addSchool service function was called with the correct arguments
         expect(userService.addUser).toHaveBeenCalledWith(req);
     });
+});
+
+describe('deleteUserController', () => {
+    let req: Partial<Request>;
+    let res: Partial<Response>;
+    let next: jest.Mock;
+    let statusMock: jest.Mock;
+    let jsonMock: jest.Mock;
+
+    beforeEach(() => {
+        req = {
+            params: { id: '123' },
+            user: { _id: 'someUserId', userType: 'SA' },
+        };
+
+        statusMock = jest.fn().mockReturnThis();
+        jsonMock = jest.fn();
+
+        res = {
+            status: statusMock,
+            json: jsonMock,
+        };
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should return success message and status 200', async () => {
+        const mockResponse = {
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'User'),
+            status: 200,
+        };
+
+        (userService.deleteUser as jest.Mock).mockResolvedValue(mockResponse);
+
+        await userController.deleteUser(req as Request, res as Response, next as NextFunction);
+
+        expect(userService.deleteUser).toHaveBeenCalledWith(req);
+        expect(statusMock).toHaveBeenCalledWith(200);
+        expect(jsonMock).toHaveBeenCalledWith({
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'User'),
+            status: 200,
+        });
+    });
+
+    // it('should return an error message and status 401 when an error occurs', async () => {
+    //     // Mock the error response from the school service
+    //     const errorMessage = 'Internal Server Error';
+    //     const error = new Error(errorMessage);
+    //     (userService.addUser as jest.Mock).mockRejectedValue(error);
+
+    //     // Call the controller function with the mocked Request and Response objects
+    //     await userController.addUser(req as Request, res as Response);
+
+    //     // Ensure the status and JSON methods were called with the correct arguments
+    //     expect(statusMock).toHaveBeenCalledWith(401);
+    //     expect(jsonMock).toHaveBeenCalledWith({ error: errorMessage });
+
+    //     // Ensure the addSchool service function was called with the correct arguments
+    //     expect(userService.addUser).toHaveBeenCalledWith(req);
+    // });
 });

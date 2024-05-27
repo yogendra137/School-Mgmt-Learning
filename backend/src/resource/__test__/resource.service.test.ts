@@ -81,10 +81,11 @@ describe('getResourceById', () => {
         (resourceModel.findOne as jest.Mock).mockResolvedValue(mockResource);
 
         const resourceId = { id: '123' };
-        const result = await resourceService.getResourceById(resourceId);
+        const user = { _id: 'userId' };
+        const result = await resourceService.getResourceById(resourceId, user);
 
         expect(result).toEqual({
-            message: messages.FETCH_RESOURCE_SUCCESS,
+            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'Resource'),
             status: 200,
             resource: mockResource,
         });
@@ -95,7 +96,8 @@ describe('getResourceById', () => {
         (resourceModel.findOne as jest.Mock).mockRejectedValue(new Error(messages.INTERNAL_SERVER_ERROR));
 
         const resourceId = { id: '123' };
-        const result = await resourceService.getResourceById(resourceId);
+        const user = { _id: 'userId' };
+        const result = await resourceService.getResourceById(resourceId, user);
 
         expect(result).toEqual({
             message: messages.INTERNAL_SERVER_ERROR,
@@ -152,7 +154,7 @@ describe('deleteResource', () => {
         );
 
         expect(result).toEqual({
-            message: messages.RESOURCE_DELETE_SUCCESS,
+            message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'Resource'),
             status: 200,
         });
     });
@@ -189,53 +191,47 @@ describe('activeAndDeActiveResource', () => {
     });
 
     it('should return success message and status 200 when status is 1 (active)', async () => {
-        const mockResourceData = {
-            params: { id: 'resourceId' },
-            query: { status: '1' },
-            user: { _id: 'userId', userType: 'SA' },
-        };
+        const id = 'resourceId';
+        const status = true;
+        const user = { _id: 'userId', userType: 'SA' };
 
         const mockUpdatedResource = { _id: 'resourceId', isActive: true, updatedBy: 'userId' };
 
         // Mock the resourceModel.findOneAndUpdate function
         (resourceModel.findOneAndUpdate as jest.Mock).mockResolvedValue(mockUpdatedResource);
 
-        const result = await resourceService.activeAndDeActiveResource(mockResourceData);
+        const result = await resourceService.activeAndDeActiveResource(id, status, user);
 
         expect(result).toEqual({
-            message: messages.CHANGE_RESOURCE_STATUS,
+            message: messages.CHANGE_STATUS_SUCCESS.replace('Item', 'Resource'),
             status: 200,
         });
     });
 
     it('should return success message and status 200 when status is 0 (inactive)', async () => {
-        const mockResourceData = {
-            params: { id: 'resourceId' },
-            query: { status: '0' },
-            user: { _id: 'userId', userType: 'SA' },
-        };
+        const id = 'resourceId';
+        const status = true;
+        const user = { _id: 'userId', userType: 'SA' };
 
         const mockUpdatedResource = { _id: 'resourceId', isActive: false, updatedBy: 'userId' };
 
         // Mock the resourceModel.findOneAndUpdate function
         (resourceModel.findOneAndUpdate as jest.Mock).mockResolvedValue(mockUpdatedResource);
 
-        const result = await resourceService.activeAndDeActiveResource(mockResourceData);
+        const result = await resourceService.activeAndDeActiveResource(id, status, user);
 
         expect(result).toEqual({
-            message: messages.CHANGE_RESOURCE_STATUS,
+            message: messages.CHANGE_STATUS_SUCCESS.replace('Item', 'Resource'),
             status: 200,
         });
     });
 
     it('should return error message and status 500 when user is not authorized', async () => {
-        const mockResourceData = {
-            params: { id: 'resourceId' },
-            query: { status: '1' },
-            user: { _id: 'userId', userType: 'PC' }, // User is not SA
-        };
+        const id = 'resourceId';
+        const status = true;
+        const user = { _id: 'userId', userType: 'SA' };
 
-        const result = await resourceService.activeAndDeActiveResource(mockResourceData);
+        const result = await resourceService.activeAndDeActiveResource(id, status, user);
         console.log('result00000000', result);
 
         expect(result).toEqual({

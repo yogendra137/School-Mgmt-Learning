@@ -1,6 +1,7 @@
 const userService = {
     addUser: jest.fn(),
-    // schoolList: jest.fn(),
+    deleteUser: jest.fn(),
+    changeUserStatus: jest.fn(),
 };
 
 export default userService;

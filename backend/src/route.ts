@@ -5,6 +5,7 @@ import testRoute from './testType/testType.route';
 import authRoute from './auth/auth.route';
 import { version } from '../../backend/package.json';
 import resourceRoute from './resource/resource.route';
+import profileRoute from './profile/profile.route';
 
 const router = express.Router();
 
@@ -13,5 +14,6 @@ router.use(`/api/${version}/school`, schoolRoute);
 router.use(`/api/${version}/test`, testRoute);
 router.use(`/api/${version}/auth`, authRoute);
 router.use(`/api/${version}/resource`, resourceRoute);
+router.use(`/api/${version}/profile`, profileRoute);
 
 export default router;
