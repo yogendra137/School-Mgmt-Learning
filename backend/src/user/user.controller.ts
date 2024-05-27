@@ -67,11 +67,11 @@ const changeUserStatus = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
-const list = async (req: Request, res: Response, next: NextFunction) => {
+const userList = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { query } = req;
         const { user }: any = req;
-        const result = await userService.list(query, user);
+        const result = await userService.userList(query, user);
         if (result) {
             const { message, status, list } = result;
             res.status(typeof status === 'number' ? status : 200).json({ message, status, list });
@@ -80,4 +80,4 @@ const list = async (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 };
-export default { addUser, changeUserStatus, deleteUser, list };
+export default { addUser, changeUserStatus, deleteUser, userList };

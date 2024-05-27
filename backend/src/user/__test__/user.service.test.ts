@@ -254,7 +254,7 @@ describe('userList', () => {
         const query = { userType: 'someType' };
         const user = null;
 
-        const result = await userService.list(query, user);
+        const result = await userService.userList(query, user);
 
         expect(result).toEqual({
             message: messages.SOMETHING_WENT_WRONG,
@@ -268,7 +268,7 @@ describe('userList', () => {
 
         (userModel.find as jest.Mock).mockResolvedValue([]);
 
-        const result = await userService.list(query, user);
+        const result = await userService.userList(query, user);
 
         expect(result).toEqual({
             message: messages.ITEM_NOT_FOUND.replace('Item', 'List'),
@@ -292,7 +292,7 @@ describe('userList', () => {
 
         (userModel.find as jest.Mock).mockResolvedValue(userList);
 
-        const result = await userService.list(query, user);
+        const result = await userService.userList(query, user);
 
         expect(result).toEqual({
             message: messages.FETCH_LIST_SUCCESS.replace('Item', 'Users'),
@@ -313,7 +313,7 @@ describe('userList', () => {
 
         (userModel.find as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-        const result = await userService.list(query, user);
+        const result = await userService.userList(query, user);
 
         expect(result).toEqual({
             success: false,

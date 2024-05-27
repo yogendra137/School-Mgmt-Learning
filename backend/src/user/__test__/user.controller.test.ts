@@ -188,9 +188,9 @@ describe('User List Controller', () => {
             list: [{ name: 'John Doe' }, { name: 'Jane Doe' }],
         };
 
-        (userService.list as jest.Mock).mockResolvedValue(mockResult);
+        (userService.userList as jest.Mock).mockResolvedValue(mockResult);
 
-        await userController.list(req as Request, res as Response, next);
+        await userController.userList(req as Request, res as Response, next);
 
         expect(statusMock).toHaveBeenCalledWith(200);
         expect(jsonMock).toHaveBeenCalledWith({
@@ -198,14 +198,14 @@ describe('User List Controller', () => {
             status: 200,
             list: mockResult.list,
         });
-        expect(userService.list).toHaveBeenCalledWith(req.query, req.user);
+        expect(userService.userList).toHaveBeenCalledWith(req.query, req.user);
     });
 
     it('should handle errors and call next with the error', async () => {
         const error = new Error('Something went wrong');
-        (userService.list as jest.Mock).mockRejectedValue(error);
+        (userService.userList as jest.Mock).mockRejectedValue(error);
 
-        await userController.list(req as Request, res as Response, next);
+        await userController.userList(req as Request, res as Response, next);
 
         expect(next).toHaveBeenCalledWith(error);
     });

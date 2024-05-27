@@ -110,7 +110,7 @@ const changeUserStatus = async (id: string, status: boolean, userData: any) => {
  * @param query
  * @returns
  */
-const list = async (query: any, user: any) => {
+const userList = async (query: any, user: any) => {
     try {
         const { userType } = query;
         if (!user) {
@@ -144,5 +144,5 @@ export default {
     addUser,
     changeUserStatus,
     deleteUser,
-    list,
+    userList,
 };
