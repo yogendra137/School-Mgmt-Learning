@@ -105,9 +105,44 @@ const changeUserStatus = async (id: string, status: boolean, userData: any) => {
         return { success: false, message: (error as Error).message };
     }
 };
+/**
+ * This api is use for to fetch list of users
+ * @param query
+ * @returns
+ */
+const userList = async (query: any, user: any) => {
+    try {
+        const { userType } = query;
+        if (!user) {
+            return {
+                message: messages.SOMETHING_WENT_WRONG,
+                status: httpStatusCode.INTERNAL_SERVER_ERROR,
+            };
+        }
+        const list = await userModel.find(
+            { userType, isDeleted: false },
+            { location: 1, name: 1, email: 1, mobileNo: 1, schoolId: 1, isActive: 1, userType: 1 },
+        );
+        if (list.length === 0) {
+            return {
+                message: messages.ITEM_NOT_FOUND.replace('Item', 'List'),
+                success: false,
+                status: httpStatusCode.NOT_FOUND,
+            };
+        }
+        return {
+            message: messages.FETCH_LIST_SUCCESS.replace('Item', 'Users'),
+            status: httpStatusCode.OK,
+            list,
+        };
+    } catch (error) {
+        return { success: false, message: (error as Error).message };
+    }
+};
 
 export default {
     addUser,
     changeUserStatus,
     deleteUser,
+    userList,
 };

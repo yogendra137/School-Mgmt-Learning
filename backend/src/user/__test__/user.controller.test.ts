@@ -152,3 +152,61 @@ describe('deleteUserController', () => {
     //     expect(userService.addUser).toHaveBeenCalledWith(req);
     // });
 });
+
+describe('User List Controller', () => {
+    let req: Partial<Request>;
+    let res: Partial<Response>;
+    let next: NextFunction;
+    let statusMock: jest.Mock;
+    let jsonMock: jest.Mock;
+
+    beforeEach(() => {
+        req = {
+            query: {},
+            user: { _id: 'userId', userType: 'SA' },
+        };
+
+        statusMock = jest.fn().mockReturnThis();
+        jsonMock = jest.fn();
+
+        res = {
+            status: statusMock,
+            json: jsonMock,
+        };
+
+        next = jest.fn();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should return a list of users with a 200 status', async () => {
+        const mockResult = {
+            message: 'Fetch users successfully',
+            status: 200,
+            list: [{ name: 'John Doe' }, { name: 'Jane Doe' }],
+        };
+
+        (userService.userList as jest.Mock).mockResolvedValue(mockResult);
+
+        await userController.userList(req as Request, res as Response, next);
+
+        expect(statusMock).toHaveBeenCalledWith(200);
+        expect(jsonMock).toHaveBeenCalledWith({
+            message: 'Fetch users successfully',
+            status: 200,
+            list: mockResult.list,
+        });
+        expect(userService.userList).toHaveBeenCalledWith(req.query, req.user);
+    });
+
+    it('should handle errors and call next with the error', async () => {
+        const error = new Error('Something went wrong');
+        (userService.userList as jest.Mock).mockRejectedValue(error);
+
+        await userController.userList(req as Request, res as Response, next);
+
+        expect(next).toHaveBeenCalledWith(error);
+    });
+});

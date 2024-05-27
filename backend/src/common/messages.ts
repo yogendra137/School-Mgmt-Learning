@@ -28,6 +28,8 @@ const messages = {
     YOU_CAN_NOT_DELETE_SUPER_ADMIN: "You can't delete the super admin",
     NOT_FOUND: 'Item not found',
     ITEM_FETCH_SUCCESS: 'Item fetch successfully!',
+    FETCH_LIST_SUCCESS: 'Item list fetch successfully!',
+    ITEM_NOT_FOUND: 'Item not found',
 };
 
 export { messages };

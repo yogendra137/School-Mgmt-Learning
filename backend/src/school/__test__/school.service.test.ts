@@ -116,7 +116,7 @@ describe('schoolList', () => {
         (schoolModel.find as jest.Mock).mockResolvedValue(mockSchools);
 
         // Call the service function with a mock user
-        const mockUser = { _id: 'mockUserId' };
+        const mockUser = { _id: 'mockUserId', isDeleted: false };
         const result = await schoolService.schoolList(mockUser);
         console.log('result-----');
 
@@ -180,7 +180,7 @@ describe('getSchoolById', () => {
             schoolName: 'Test School',
         };
 
-        const mockUser = { _id: 'user123' }; // Mock user object
+        const mockUser = { _id: 'user123', isDeleted: false }; // Mock user object
 
         // Mock the findOne method to return the mock school
         (schoolModel.findOne as jest.Mock).mockResolvedValue(mockSchool);
@@ -194,11 +194,11 @@ describe('getSchoolById', () => {
         });
 
         // Ensure the findOne method was called with the correct arguments
-        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: '123' });
+        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: '123', isDeleted: false });
     });
 
     it('should return a 404 status when the school is not found', async () => {
-        const mockUser = { _id: 'user123' }; // Mock user object
+        const mockUser = { _id: 'user123', isDeleted: false }; // Mock user object
 
         // Mock the findOne method to return null
         (schoolModel.findOne as jest.Mock).mockResolvedValue(null);
@@ -207,11 +207,11 @@ describe('getSchoolById', () => {
 
         expect(result).toEqual({
             message: messages.NOT_FOUND.replace('Item', 'School'),
-            status: false,
+            status: 404,
         });
 
         // Ensure the findOne method was called with the correct arguments
-        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: 'nonExistingId' });
+        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: 'nonExistingId', isDeleted: false });
     });
 
     it('should return an error message when no user is provided', async () => {
@@ -219,13 +219,13 @@ describe('getSchoolById', () => {
 
         expect(result).toEqual({
             message: messages.SOMETHING_WENT_WRONG,
-            status: false,
+            status: 500,
         });
     });
 
     it('should handle errors and return a 500 status', async () => {
         const errorMessage = 'Database error';
-        const mockUser = { _id: 'user123' }; // Mock user object
+        const mockUser = { _id: 'user123', isDeleted: false }; // Mock user object
 
         // Mock the findOne method to throw an error
         (schoolModel.findOne as jest.Mock).mockRejectedValue(new Error(errorMessage));
@@ -239,6 +239,6 @@ describe('getSchoolById', () => {
         });
 
         // Ensure the findOne method was called with the correct arguments
-        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: '123' });
+        expect(schoolModel.findOne).toHaveBeenCalledWith({ _id: '123', isDeleted: false });
     });
 });
