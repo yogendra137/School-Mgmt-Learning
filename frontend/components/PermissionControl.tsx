@@ -1,6 +1,8 @@
 import React from 'react';
 
-function PermissionControl({ children }) {
+function PermissionControl({
+	children,
+}: Readonly<React.PropsWithChildren<{}>>) {
 	return <div>{children}</div>;
 }
 
