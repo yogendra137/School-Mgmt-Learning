@@ -1,0 +1,23 @@
+@import '../../../styles/common.scss';
+
+.Switch {
+  [class*='form-switch'] {
+    padding: 0;
+    @include flex-container(
+      $direction: row,
+      $spacing: center,
+      $alignment: center
+    );
+  }
+  [class*='form-check-input'] {
+    height: 18px;
+    width: 36px;
+  }
+  [class*='form-check-input:checked'] {
+    background-color: $warning-200;
+    border-color: $warning-200;
+  }
+  [class*='label'] {
+    margin-left: $margin-xs;
+  }
+}

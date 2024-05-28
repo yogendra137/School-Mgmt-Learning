@@ -1,31 +1,27 @@
 import styles from './styles.module.scss';
-
+import classNames from 'classnames';
 interface ButtonComponentProps {
-  type: 'submit' | 'reset' | 'button';
-  onClick: () => void;
-  label: string;
-  value: string;
-  className: string;
-  variant: string;
+	type?: 'submit' | 'reset' | 'button';
+	onClick?: () => {};
+	label?: string;
+	value?: string;
+	className?: string;
+	children: string;
 }
 
 const Button: React.FC<ButtonComponentProps> = ({
-  type,
-  onClick,
-  label,
-  value,
-  className,
-  variant = 'primary',
+	type,
+	children,
+	onClick,
+	label,
+	value,
+	className,
 }) => {
-  return (
-    <button
-      className={`${variant} ${styles.button}`}
-      type={type}
-      onClick={onClick}
-    >
-      {value}
-    </button>
-  );
+	return (
+		<button className={classNames(className)} type={type} onClick={onClick}>
+			{children}
+		</button>
+	);
 };
 
 export default Button;

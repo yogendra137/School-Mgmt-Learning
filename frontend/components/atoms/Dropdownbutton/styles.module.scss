@@ -1,0 +1,10 @@
+@import '../../../styles/common.scss';
+
+.actionDropdown {
+  [class*='dropdown-toggle'] {
+    height: auto !important;
+  }
+  [class*='dropdown-toggle']::after {
+    display: none;
+  }
+}

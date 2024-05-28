@@ -1,0 +1,62 @@
+@import '../../../styles/common.scss';
+
+.checkbox {
+  position: relative;
+  @include flex-container(
+    $direction: row,
+    $spacing: flex-start,
+    $alignment: center
+  );
+  label {
+    cursor: pointer;
+    @include flex-container(
+      $direction: row,
+      $spacing: space-between,
+      $alignment: center
+    );
+    gap: 10px;
+    span {
+      border: 1px solid $gray-500;
+      width: 20px;
+      height: 20px;
+      border-radius: $border-radius-xs;
+      position: relative;
+      background-color: $white;
+      @include flex-container(
+        $direction: row,
+        $spacing: center,
+        $alignment: center
+      );
+      svg {
+        width: 12px;
+        height: 12px;
+        visibility: hidden;
+      }
+    }
+    input {
+      display: none;
+    }
+    p {
+      color: $gray-900;
+    }
+  }
+
+  a {
+    color: $primary;
+    svg {
+      margin-left: $margin-sm;
+    }
+  }
+
+  &.checked {
+    label {
+      span {
+        border-color: $primary;
+        background-color: $primary;
+        svg {
+          visibility: visible;
+        }
+      }
+    }
+  }
+}
