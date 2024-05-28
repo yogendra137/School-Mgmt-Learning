@@ -12,23 +12,15 @@ export function checkAuthentication(
 	const isPublicRoute = publicRoutes.includes(path);
 	const cookie = cookies().get('token')?.value;
 
+	if (!isPublicRoute && !isProtectedRoute) {
+		return NextResponse.redirect(new URL('/page403', req.nextUrl));
+	}
+
 	if (isProtectedRoute && !cookie) {
 		return NextResponse.redirect(new URL('/login', req.nextUrl));
 	}
 
-	if (
-		isProtectedRoute &&
-		cookie &&
-		!req.nextUrl.pathname.startsWith('/dashboard')
-	) {
-		return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
-	}
-
-	if (
-		isPublicRoute &&
-		cookie &&
-		!req.nextUrl.pathname.startsWith('/dashboard')
-	) {
+	if (isPublicRoute && cookie && ['/login', '/signup'].includes(path)) {
 		return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
 	}
 
