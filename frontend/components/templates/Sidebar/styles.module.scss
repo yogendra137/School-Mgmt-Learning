@@ -1,0 +1,154 @@
+@import '../../../styles/common.scss';
+
+.sidebar {
+  @include position($position: fixed, $top: 71px, $bottom: 0, $left: 0);
+  @include flex-container(
+    $direction: column,
+    $spacing: space-between,
+    $alignment: flex-start
+  );
+  width: 250px;
+  background-color: $white;
+  z-index: 100;
+  text-align: left;
+  transition: all 0.3s;
+
+  @include for-mini-laptop {
+    left: -250px;
+    padding-bottom: $padding-md;
+
+    &.open {
+      left: 0;
+    }
+  }
+
+  .sidebarInner {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    padding: $padding-md $padding-md $padding-xxl;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+  }
+
+  .sidebarMenu {
+    width: 100%;
+    margin-bottom: 110px;
+    > li {
+      display: block;
+      padding: $padding-xs 0;
+      margin-bottom: $margin-xs;
+      &.active {
+        > a {
+          background-color: rgba($primary, 0.2);
+          border-radius: $border-radius-xs;
+          /* color: $primary; */
+        }
+      }
+      a,
+      p,
+      button {
+        @include flex-container(
+          $direction: row,
+          $spacing: flex-start,
+          $alignment: center
+        );
+        font-size: $font-size-md;
+        font-weight: $font-400;
+        line-height: normal;
+        color: $gray-900;
+        text-decoration: none;
+        cursor: pointer;
+        position: relative;
+        padding: $padding-sm;
+
+        span {
+          border-radius: 0;
+          background: none;
+          padding: 0;
+          width: unset;
+          height: unset;
+          color: $black;
+          fill: currentcolor;
+
+          svg {
+            width: 24px;
+            height: 24px;
+            margin-right: $margin-sm;
+          }
+        }
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .collapse-sidebar {
+    @include position($position: absolute, $left: 0, $bottom: 0, $right: 0);
+    @include flex-container($spacing: center, $alignment: center);
+    background-color: $gray-700;
+    padding: $padding-md $padding-sm;
+    text-align: center;
+    border-top: 1px solid $black;
+    color: $black;
+    cursor: pointer;
+    gap: 10px;
+    @include for-mini-laptop {
+      display: none;
+    }
+    z-index: 1;
+  }
+
+  &.collapse {
+    width: 60px;
+    padding: $padding-md $padding-sm;
+
+    ~ [class*='dashboard'] {
+      margin-left: 60px;
+    }
+    .collapse-sidebar {
+      span {
+        display: none;
+      }
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+    .sidebarMenu {
+      > li {
+        font-size: 0;
+        width: 40px;
+        height: 40px;
+        @include flex-container($spacing: center, $alignment: center);
+        span {
+          margin: 0;
+        }
+      }
+    }
+    .sidebarSubMenu,
+    .feedback {
+      display: none;
+    }
+  }
+}
+
+.toggle {
+  @include position($position: fixed, $top: 20px, $left: 190px);
+  z-index: 101;
+  cursor: pointer;
+  display: none;
+
+  @include for-mini-laptop {
+    display: block;
+  }
+  @include for-mobile {
+    left: 130px;
+  }
+}

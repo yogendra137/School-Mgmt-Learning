@@ -8,6 +8,7 @@ body {
   font-family: $font-family-default;
   font-weight: $font-400;
   overflow-x: hidden;
+  background-color: $bg-100;
 
   h1,
   h2,
@@ -19,7 +20,6 @@ body {
     color: $black;
   }
 
-  
   .form-check-input:focus {
     box-shadow: none;
   }
@@ -30,12 +30,17 @@ body {
     margin: 0;
   }
 
+  a {
+    text-decoration: none;
+    color: $info-200;
+  }
+
   ul {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  
+
   [disabled],
   .form-check-input:disabled {
     cursor: not-allowed;
@@ -46,7 +51,7 @@ body {
     pointer-events: none;
     opacity: 0.5;
   }
-  
+
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -58,7 +63,49 @@ body {
     outline: none;
   }
 
-  input[type="number"] {
+  input[type='number'] {
     -moz-appearance: textfield;
+  }
+
+  .btn-primary.btn {
+    background-color: $primary;
+    border-color: $primary;
+    border-radius: $border-radius-sm;
+    height: 48px;
+  }
+  .btn-primary:hover {
+    background-color: $secondary;
+    border-color: $secondary;
+  }
+
+  .card .card-header {
+    background: $white;
+    padding: $padding-md;
+    font-size: $font-size-lg;
+    font-weight: $font-500;
+    @include flex-container(
+      $direction: row,
+      $spacing: space-between,
+      $alignment: center
+    );
+  }
+
+  .table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: $gray-100;
+  }
+  .table-striped > tbody > tr > td,
+  .table-striped > thead > tr > th {
+    padding: $padding-md;
+    vertical-align: middle;
+  }
+
+  .MainWrapper {
+    padding-top: 90px;
+    min-height: calc(100vh - 125px);
+    margin-left: 270px;
+
+    @include for-mobile {
+      margin-left: 0px;
+    }
   }
 }
