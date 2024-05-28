@@ -117,7 +117,7 @@ describe('schoolList', () => {
         (schoolModel.find as jest.Mock).mockResolvedValue(mockSchools);
 
         // Call the service function with a mock user
-        const mockUser = { _id: 'mockUserId' };
+        const mockUser = { _id: 'mockUserId', isDeleted: false };
         const result = await schoolService.schoolList(mockUser);
 
         // Ensure the find method was called with the correct arguments
@@ -180,7 +180,7 @@ describe('getSchoolById', () => {
             schoolName: 'Test School',
         };
 
-        const mockUser = { _id: 'user123' }; // Mock user object
+        const mockUser = { _id: 'user123', isDeleted: false }; // Mock user object
 
         // Mock the findOne method to return the mock school
         (schoolModel.findOne as jest.Mock).mockResolvedValue(mockSchool);
@@ -198,7 +198,7 @@ describe('getSchoolById', () => {
     });
 
     it('should return a 404 status when the school is not found', async () => {
-        const mockUser = { _id: 'user123' }; // Mock user object
+        const mockUser = { _id: 'user123', isDeleted: false }; // Mock user object
 
         // Mock the findOne method to return null
         (schoolModel.findOne as jest.Mock).mockResolvedValue(null);
@@ -225,7 +225,7 @@ describe('getSchoolById', () => {
 
     it('should handle errors and return a 500 status', async () => {
         const errorMessage = 'Database error';
-        const mockUser = { _id: 'user123' }; // Mock user object
+        const mockUser = { _id: 'user123', isDeleted: false }; // Mock user object
 
         // Mock the findOne method to throw an error
         (schoolModel.findOne as jest.Mock).mockRejectedValue(new Error(errorMessage));

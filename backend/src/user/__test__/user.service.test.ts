@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { decipher } from '../../common'; // Import decipher function if it’s a custom module
 import { messages } from '../../common'; // Import messages
+import httpStatusCode from '../../config/statusCode';
 
 jest.mock('../user.model');
 jest.mock('../../accessLogs/access.logs.model');
@@ -242,5 +243,87 @@ describe('changeUserStatus', () => {
             success: false,
             message: errorMessage,
         });
+    });
+});
+
+describe('userList', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should return an error message when user is not provided', async () => {
+        const query = { userType: 'someType' };
+        const user = null;
+
+        const result = await userService.userList(query, user);
+
+        expect(result).toEqual({
+            message: messages.SOMETHING_WENT_WRONG,
+            status: httpStatusCode.INTERNAL_SERVER_ERROR,
+        });
+    });
+
+    it('should return a not found message when the list is empty', async () => {
+        const query = { userType: 'someType' };
+        const user = { _id: 'userId' };
+
+        (userModel.find as jest.Mock).mockResolvedValue([]);
+
+        const result = await userService.userList(query, user);
+
+        expect(result).toEqual({
+            message: messages.ITEM_NOT_FOUND.replace('Item', 'List'),
+            success: false,
+            status: httpStatusCode.NOT_FOUND,
+        });
+
+        expect(userModel.find).toHaveBeenCalledWith(
+            { userType: 'someType', isDeleted: false },
+            { location: 1, name: 1, email: 1, mobileNo: 1, schoolId: 1, isActive: 1, userType: 1 },
+        );
+    });
+
+    it('should return the list of users successfully', async () => {
+        const query = { userType: 'someType' };
+        const user = { _id: 'userId' };
+        const userList = [
+            { name: 'User1', email: 'user1@example.com' },
+            { name: 'User2', email: 'user2@example.com' },
+        ];
+
+        (userModel.find as jest.Mock).mockResolvedValue(userList);
+
+        const result = await userService.userList(query, user);
+
+        expect(result).toEqual({
+            message: messages.FETCH_LIST_SUCCESS.replace('Item', 'Users'),
+            status: httpStatusCode.OK,
+            list: userList,
+        });
+
+        expect(userModel.find).toHaveBeenCalledWith(
+            { userType: 'someType', isDeleted: false },
+            { location: 1, name: 1, email: 1, mobileNo: 1, schoolId: 1, isActive: 1, userType: 1 },
+        );
+    });
+
+    it('should handle errors gracefully', async () => {
+        const query = { userType: 'someType' };
+        const user = { _id: 'userId' };
+        const errorMessage = 'Internal Server Error';
+
+        (userModel.find as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+        const result = await userService.userList(query, user);
+
+        expect(result).toEqual({
+            success: false,
+            message: errorMessage,
+        });
+
+        expect(userModel.find).toHaveBeenCalledWith(
+            { userType: 'someType', isDeleted: false },
+            { location: 1, name: 1, email: 1, mobileNo: 1, schoolId: 1, isActive: 1, userType: 1 },
+        );
     });
 });
