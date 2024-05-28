@@ -130,7 +130,7 @@ const deleteSchool = async (schoolId: any, user: any) => {
                 status: httpsStatusCode.NOT_FOUND,
             };
         }
-        await schoolModel.findOneAndUpdate({ _id: schoolId }, { $set: { isDeleted: true, isActive: false } });
+        await schoolModel.findOneAndUpdate({ _id: schoolId }, { $set: { isDeleted: true } });
         return {
             message: messages.ITEM_DELETED_SUCCESS.replace('Item', 'School'),
             status: httpsStatusCode.OK,
