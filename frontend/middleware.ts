@@ -20,7 +20,7 @@ export default async function middleware(req: NextRequest) {
 		(cookies().get('userType')?.value as IRole) ?? '';
 
 	// 5. Redirect to /login if the user is not authenticated
-	if (isPublicRoute && !cookie) {
+	if (isProtectedRoute && !cookie) {
 		return NextResponse.redirect(new URL('/login', req.nextUrl));
 	}
 

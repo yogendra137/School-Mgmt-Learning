@@ -13,7 +13,7 @@ import { IRole } from '@/interfaces';
 const queryClient = new QueryClient();
 persistStore(store);
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
 	const router = useRouter();
 	const userType = Cookies.get('userType');
 	const currentSection = router.pathname?.split('/')[1];
