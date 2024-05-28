@@ -7,8 +7,8 @@
         "test": "cross-env NODE_ENV=test jest --testTimeout=5000 --coverage --detectOpenHandles",
         "start": "nodemon src/server.ts",
         "format": "npx prettier --write .",
-        "build": "tsc && npm run lint",
-        "lint": "tslint -c tslint.json 'src/**/*.ts'",
+        "build": "tsc",
+        "lint": "npx eslint 'src/**/*.ts'",
         "tsc": "tsc"
     },
     "author": "",

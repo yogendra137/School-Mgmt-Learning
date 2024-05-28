@@ -3,7 +3,6 @@ module.exports = {
         node: true,
         commonjs: true,
     },
-    files: ['.ts'],
     extends: 'eslint:recommended',
 
     overrides: [
