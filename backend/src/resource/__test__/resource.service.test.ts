@@ -80,7 +80,7 @@ describe('getResourceById', () => {
         const mockResource = { _id: '123', title: 'Test Resource' };
         (resourceModel.findOne as jest.Mock).mockResolvedValue(mockResource);
 
-        const resourceId = { id: '123' };
+        const resourceId = '123'; // Pass the resourceId as a string
         const user = { _id: 'userId' };
         const result = await resourceService.getResourceById(resourceId, user);
 
@@ -89,14 +89,16 @@ describe('getResourceById', () => {
             status: 200,
             resource: mockResource,
         });
-        expect(resourceModel.findOne).toHaveBeenCalledWith({ _id: '123' });
+        expect(resourceModel.findOne).toHaveBeenCalledWith({ _id: '123', isDeleted: false });
     });
 
     it('should return a failure message and status 500', async () => {
-        (resourceModel.findOne as jest.Mock).mockRejectedValue(new Error(messages.INTERNAL_SERVER_ERROR));
+        const errorMessage = 'Internal Server Error';
+        (resourceModel.findOne as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-        const resourceId = { id: '123' };
+        const resourceId = '123';
         const user = { _id: 'userId' };
+
         const result = await resourceService.getResourceById(resourceId, user);
 
         expect(result).toEqual({
@@ -104,8 +106,23 @@ describe('getResourceById', () => {
             status: 500,
             success: false,
         });
-        expect(resourceModel.findOne).toHaveBeenCalledWith({ _id: '123' });
+
+        expect(resourceModel.findOne).toHaveBeenCalledWith({ _id: '123', isDeleted: false });
     });
+    // it('should return a failure message and status 500', async () => {
+    //     (resourceModel.findOne as jest.Mock).mockRejectedValue(new Error(messages.INTERNAL_SERVER_ERROR));
+
+    //     const resourceId = { id: '123' };
+    //     const user = { _id: 'userId' };
+    //     const result = await resourceService.getResourceById(resourceId, user);
+
+    //     expect(result).toEqual({
+    //         message: messages.INTERNAL_SERVER_ERROR,
+    //         status: 500,
+    //         success: false,
+    //     });
+    //     expect(resourceModel.findOne).toHaveBeenCalledWith({ _id: '123', isDeleted: false });
+    // });
 });
 
 // Delete resource
@@ -229,7 +246,7 @@ describe('activeAndDeActiveResource', () => {
     it('should return error message and status 500 when user is not authorized', async () => {
         const id = 'resourceId';
         const status = true;
-        const user = { _id: 'userId', userType: 'SA' };
+        const user = { _id: 'userId', userType: 'PC' };
 
         const result = await resourceService.activeAndDeActiveResource(id, status, user);
         console.log('result00000000', result);

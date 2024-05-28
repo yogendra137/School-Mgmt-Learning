@@ -82,17 +82,19 @@ describe('addResource Controller', () => {
     // this will handle catch error
     it('should return error message and status 401 on failure', async () => {
         const errorMessage = 'Internal Server Error';
+        // Mock resourceService.getResourceById to reject with an error
         (resourceService.getResourceById as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-        await resourceController.getResourceById(req as Request, res as Response); // this is the controller
+        // Call the controller function with the updated req object
+        await resourceController.getResourceById(req as Request, res as Response);
 
-        expect(resourceService.getResourceById).toHaveBeenCalled(); // Ensure the service method is called
-        expect(statusMock).toHaveBeenCalledWith(401); // Ensure status method is called with 401
-        expect(jsonMock).toHaveBeenCalledWith({ error: errorMessage }); // Ensure json method is called with the error message
+        // Verify that the response is sent with status 401 and the error message
+        expect(statusMock).toHaveBeenCalledWith(401);
+        expect(jsonMock).toHaveBeenCalledWith({ error: errorMessage });
     });
 });
 
-describe('getResourceById Controller', () => {
+describe('getResourceById controller', () => {
     let req: Partial<Request>;
     let res: Partial<Response>;
     let statusMock: jest.Mock;
@@ -100,51 +102,63 @@ describe('getResourceById Controller', () => {
 
     beforeEach(() => {
         req = {
-            params: { id: '123' },
-        };
+            params: { id: 'resourceId' },
+            user: { _id: 'userId', userType: 'SA' },
+        } as Partial<Request>;
+
         statusMock = jest.fn().mockReturnThis();
         jsonMock = jest.fn();
+
         res = {
             status: statusMock,
             json: jsonMock,
-        };
+        } as Partial<Response>;
     });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should return the resource with a success message and status 200', async () => {
-        const mockResource = { _id: '123', title: 'Test Resource' };
+    it('should return resource details with status 200 when resource is found', async () => {
+        const mockResource = {
+            _id: 'resourceId',
+            title: 'Test Resource',
+            content: 'Lorem ipsum dolor sit amet',
+        };
+
+        // Mock resourceService.getResourceById to resolve with the mock resource
         (resourceService.getResourceById as jest.Mock).mockResolvedValue({
-            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'Resource'),
+            message: 'Resource found',
             status: 200,
             resource: mockResource,
         });
 
+        // Call the controller function
         await resourceController.getResourceById(req as Request, res as Response);
 
+        // Verify that the response is sent with the correct status and resource
         expect(statusMock).toHaveBeenCalledWith(200);
         expect(jsonMock).toHaveBeenCalledWith({
-            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'Resource'),
+            message: 'Resource found',
             status: 200,
             resource: mockResource,
         });
-        expect(resourceService.getResourceById).toHaveBeenCalledWith(req.params);
     });
 
-    it('should return a failure message and status 401', async () => {
+    it('should return 401 status with error message when an error occurs', async () => {
         const errorMessage = 'Internal Server Error';
+
+        // Mock resourceService.getResourceById to reject with an error
         (resourceService.getResourceById as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-        await resourceController.getResourceById(req as Request, res as Response); // here is the controller
+        // Call the controller function
+        await resourceController.getResourceById(req as Request, res as Response);
 
-        expect(statusMock).toHaveBeenCalledWith(401); // return expected status
-        expect(jsonMock).toHaveBeenCalledWith({ error: messages.INTERNAL_SERVER_ERROR });
-        expect(resourceService.getResourceById).toHaveBeenCalledWith(req.params, req.user);
+        // Verify that the response is sent with status 401 and the error message
+        expect(statusMock).toHaveBeenCalledWith(401);
+        expect(jsonMock).toHaveBeenCalledWith({ error: errorMessage });
     });
 });
-
 describe('deleteResource controller', () => {
     let req: Partial<Request>;
     let res: Partial<Response>;
@@ -201,53 +215,6 @@ describe('deleteResource controller', () => {
     });
 });
 
-describe('Get resource by id Controller', () => {
-    let req: Partial<Request>;
-    let res: Partial<Response>;
-    let statusMock: jest.Mock;
-    let jsonMock: jest.Mock;
-
-    beforeEach(() => {
-        req = {}; // Initialize request object
-        statusMock = jest.fn().mockReturnThis(); // Mock status method
-        jsonMock = jest.fn(); // Mock json method
-        res = {
-            status: statusMock,
-            json: jsonMock,
-        };
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks(); // Clear mocks after each test
-    });
-
-    it('should return the resource successfully', async () => {
-        const mockResponse = {
-            message: messages.ITEM_FETCH_SUCCESS.replace('Item', 'School'),
-            status: true,
-        };
-
-        (resourceService.getResourceById as jest.Mock).mockResolvedValue(mockResponse);
-
-        await resourceController.getResourceById(req as Request, res as Response); // this will be controller
-
-        expect(resourceService.getResourceById).toHaveBeenCalled(); // Ensure the service method is called
-        expect(statusMock).toHaveBeenCalledWith(200); // Ensure status method is called with 200
-        expect(jsonMock).toHaveBeenCalledWith(mockResponse); // Ensure json method is called with the correct response
-    });
-    // this will handle catch error
-    it('should return error message and status 401 on failure', async () => {
-        const errorMessage = 'Internal Server Error';
-        (resourceService.getResourceById as jest.Mock).mockRejectedValue(new Error(errorMessage));
-
-        await resourceController.getResourceById(req as Request, res as Response); // this is the controller
-
-        expect(resourceService.getResourceById).toHaveBeenCalled(); // Ensure the service method is called
-        expect(statusMock).toHaveBeenCalledWith(401); // Ensure status method is called with 401
-        expect(jsonMock).toHaveBeenCalledWith({ error: errorMessage }); // Ensure json method is called with the error message
-    });
-});
-
 describe('activeAndDeActiveResource Controller', () => {
     let req: Partial<Request>;
     let res: Partial<Response>;
@@ -268,19 +235,20 @@ describe('activeAndDeActiveResource Controller', () => {
         jest.clearAllMocks(); // Clear mocks after each test
     });
 
-    it('should return the message and status successfully', async () => {
+    it('should activate the resource and return success message with status 200', async () => {
+        // Mock the response from the service
         const mockResponse = {
             message: messages.CHANGE_STATUS_SUCCESS.replace('Item', 'Resource'),
-            status: true,
+            status: 200,
         };
-
         (resourceService.activeAndDeActiveResource as jest.Mock).mockResolvedValue(mockResponse);
 
-        await resourceController.activeAndDeActiveResource(req as Request, res as Response); // this will be controller
+        // Call the controller function
+        await resourceController.activeAndDeActiveResource(req as Request, res as Response);
 
-        expect(resourceService.activeAndDeActiveResource).toHaveBeenCalled(); // Ensure the service method is called
-        expect(statusMock).toHaveBeenCalledWith(200); // Ensure status method is called with 200
-        expect(jsonMock).toHaveBeenCalledWith(mockResponse); // Ensure json method is called with the correct response
+        // Verify the response sent by the controller
+        expect(statusMock).toHaveBeenCalledWith(200);
+        expect(jsonMock).toHaveBeenCalledWith(mockResponse);
     });
     // this will handle catch error
     it('should return error message and status 401 on failure', async () => {

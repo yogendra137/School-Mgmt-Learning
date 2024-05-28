@@ -13,7 +13,7 @@ jest.mock('bcrypt');
 jest.mock('jsonwebtoken');
 jest.mock('../../common');
 
-describe('addUser', () => {
+describe('addUser service', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -75,6 +75,7 @@ describe('addUser', () => {
             email: 'project1@gmail.com',
             mobileNo: '7854126589',
             password: hashedPassword,
+            schoolId: '123',
             haveSkills: [],
             isActive: true,
             userType: 'PC',
@@ -100,7 +101,7 @@ describe('addUser', () => {
     // Add more test cases as needed
 });
 
-describe('deleteUser', () => {
+describe('deleteUser service', () => {
     const userId = 'user-id';
     const adminId = 'admin-id';
 
