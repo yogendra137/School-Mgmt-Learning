@@ -1,0 +1,314 @@
+@import '../../../styles/common.scss';
+
+.header-wrapper {
+  z-index: 101;
+  @include position($position: fixed, $top: 0, $left: 0, $right: 0);
+  .header {
+    background-color: $white;
+    padding: $padding-sm * 1.75 $padding-lg;
+    box-shadow: 0 2px 2px rgba($black, 0.04);
+
+    .headerInner {
+      max-width: 100%;
+
+      .logo {
+        img {
+          width: 160px;
+          height: auto;
+          @include for-mobile {
+            width: 100px;
+            height: 25px;
+          }
+        }
+      }
+
+      .right {
+        @include flex-container(
+          $direction: row,
+          $spacing: flex-end,
+          $alignment: center
+        );
+        gap: 15px;
+        z-index: 1;
+        position: relative;
+        animation: opacity 0.1 linear;
+
+        @keyframes opacity {
+          100% {
+            opacity: 0;
+          }
+        }
+
+        .menus {
+          @include flex-container(
+            $direction: row,
+            $spacing: flex-end,
+            $alignment: center
+          );
+          margin: 0;
+          gap: 15px;
+
+          li {
+            a {
+              font-size: $font-size-default * 1.07;
+              font-weight: $font-500;
+              color: $black;
+              text-decoration: none;
+              padding: $padding-sm $padding-sm * 1.25;
+              display: block;
+              border-radius: $border-radius-xs;
+              overflow: hidden;
+
+              @include position($position: relative);
+
+              &::before {
+                @include position(
+                  $position: absolute,
+                  $top: 0,
+                  $right: 0,
+                  $bottom: 0,
+                  $left: 0
+                );
+
+                content: '';
+                background: rgba($black, 0.08);
+                border-radius: $border-radius-xs;
+                transform: scale(0.3);
+                opacity: 0;
+                transition: all 0.2s;
+              }
+
+              &:hover {
+                &::before {
+                  transform: scale(1);
+                  opacity: 1;
+                }
+              }
+            }
+          }
+        }
+
+        .profile {
+          @include flex-container(
+            $direction: row,
+            $spacing: center,
+            $alignment: center
+          );
+          gap: 15px;
+          p {
+            font-size: 12px;
+            color: $black;
+
+            @include for-mobile {
+              display: none;
+            }
+          }
+          button {
+            padding: 0;
+            border-radius: $border-radius-xl;
+            border: none;
+            z-index: 1;
+            width: 40px;
+            height: 40px;
+            background-color: $white;
+
+            img {
+              border: 2px solid $black;
+              border-radius: $border-radius-xl;
+              transform: translate(0, 0);
+              transition: all 0.15s;
+            }
+
+            &::before {
+              content: '';
+              border-radius: $border-radius-xl;
+              @include position(
+                $position: absolute,
+                $top: 0,
+                $right: 0,
+                $bottom: 0,
+                $left: 0
+              );
+              border: 2px solid $black;
+              background-color: $success-100;
+              z-index: -1;
+            }
+
+            &:hover {
+              background-color: transparent;
+              img {
+                transform: translate(-4px, -3px);
+              }
+            }
+          }
+
+          &.active {
+            border-color: $primary;
+          }
+
+          .profileDropdown {
+            > div {
+              width: 234px;
+              a {
+                text-align: left;
+                svg {
+                  width: 15px;
+                  height: 15px;
+                  fill: $black;
+                  margin-right: $margin-sm;
+                }
+                &:last-child {
+                  svg {
+                    fill: transparent;
+                    path {
+                      stroke: $black;
+                    }
+                  }
+                }
+                &[class*='active'] {
+                  color: $primary;
+                  svg {
+                    fill: $primary;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    @include for-mobile {
+      padding: $padding-sm * 1.75 $padding-md;
+    }
+  }
+
+  .logo-wrapper {
+    img {
+      @include for-mobile {
+        width: 100px;
+        height: 25px;
+      }
+    }
+    .hoverLogo {
+      display: none;
+    }
+    &:hover {
+      .hoverLogo {
+        display: inline-block;
+      }
+      .logo {
+        display: none;
+      }
+    }
+  }
+
+  .sub-header {
+    @include flex-container(
+      $direction: row,
+      $spacing: center,
+      $alignment: center
+    );
+    background-color: #fbfbfb;
+    box-shadow: 0 2px 2px rgba($black, 0.03);
+    border-bottom: 1px solid rgba($black, 0.2);
+
+    .nav {
+      @include flex-container(
+        $direction: row,
+        $spacing: center,
+        $alignment: center
+      );
+      gap: 30px;
+
+      li {
+        a {
+          padding: $padding-md;
+          display: inline-block;
+          color: $black;
+          text-decoration: none;
+
+          font-weight: $font-600;
+          font-size: $font-size-default;
+          border-bottom: 3px solid transparent;
+
+          svg {
+            margin-right: $margin-sm;
+          }
+
+          &:hover {
+            color: $primary;
+            fill: currentcolor;
+          }
+
+          &.active {
+            color: $primary;
+            fill: currentcolor;
+            border-color: $primary;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include for-tablet {
+  .header-wrapper {
+    .header {
+      .headerInner {
+        .right {
+          .menus {
+            @include position(
+              $position: fixed,
+              $top: 72px,
+              $right: null,
+              $bottom: 0,
+              $left: -250px
+            );
+            @include flex-container(
+              $direction: column,
+              $spacing: flex-start,
+              $alignment: flex-start
+            );
+            width: 230px;
+            background: $white;
+            box-shadow: 0 0 20px rgba($black, 0.1);
+            padding: $padding-md;
+            transition: all 0.3s;
+            &.open {
+              left: 0;
+            }
+          }
+          .toggle {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include for-mobile {
+  .header-wrapper {
+    .sub-header {
+      .nav {
+        gap: 10px;
+        li {
+          a {
+            @include flex-container(
+              $direction: column,
+              $spacing: center,
+              $alignment: center
+            );
+            text-align: center;
+            padding: $padding-sm $padding-sm;
+            svg {
+              margin-right: 0;
+              margin-bottom: $margin-xs;
+            }
+          }
+        }
+      }
+    }
+  }
+}

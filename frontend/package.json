@@ -10,23 +10,28 @@
 		"test": "jest --coverage --silent"
 	},
 	"dependencies": {
+		"@hookform/resolvers": "^3.4.2",
 		"@reduxjs/toolkit": "^2.2.5",
 		"@tanstack/react-query": "^5.36.2",
 		"axios": "^1.6.8",
 		"bootstrap": "^5.3.3",
+		"classnames": "^2.5.1",
 		"js-cookie": "^3.0.5",
 		"next": "14.2.3",
 		"react": "^18",
 		"react-bootstrap": "^2.10.2",
 		"react-dom": "^18",
 		"react-redux": "^9.1.2",
+		"react-select": "^5.8.0",
 		"redux-persist": "^6.0.0",
-		"sass": "^1.77.1"
+		"sass": "^1.77.1",
+		"yup": "^1.4.0"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^6.4.5",
 		"@testing-library/react": "^15.0.7",
 		"@types/jest": "^29.5.12",
+		"@types/js-cookie": "^3.0.6",
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",

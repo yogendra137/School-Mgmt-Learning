@@ -1,11 +1,11 @@
 import { Login } from '@/components/organisms/login';
 import instance from '@/config/axios';
 import encryptPassword from '@/config/encryptPassword';
+import { ILoginParams } from '@/interfaces';
 import { useAppDispatch } from '@/store';
 import { setAuthState } from '@/store/slices/authSlice';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-// import Cookies from 'js-cookie';
 
 export default function LoginPage() {
 	const dispatch = useAppDispatch();
@@ -16,10 +16,7 @@ export default function LoginPage() {
 			return instance.post('/auth/login', { email, password });
 		},
 		onSuccess: (data) => {
-			// localStorage.setItem('token', data.data.token);
-			// Cookies.set('token', data.data.token); // Using js-cookie to set the cookie
 			dispatch(setAuthState(true));
-			console.log('I am here or not');
 			router.push('/dashboard');
 		},
 	});

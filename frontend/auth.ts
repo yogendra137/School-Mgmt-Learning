@@ -13,7 +13,11 @@ export function checkAuthentication(
 	const isPublicRoute = publicRoutes.includes(path);
 	const cookie = cookies().get('token')?.value;
 
-	if (!isPublicRoute && !isProtectedRoute) {
+	if (
+		!isPublicRoute &&
+		!isProtectedRoute &&
+		!req.nextUrl.pathname.startsWith('/page403')
+	) {
 		return NextResponse.redirect(new URL('/page403', req.nextUrl));
 	}
 
@@ -21,7 +25,7 @@ export function checkAuthentication(
 		return NextResponse.redirect(new URL('/login', req.nextUrl));
 	}
 
-	if (isPublicRoute && cookie && authRedirection.includes(path)) {
+	if (cookie && authRedirection.includes(path)) {
 		return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
 	}
 
