@@ -3,10 +3,12 @@ import UserModel from '../../user/user.model'; // Adjust the import according to
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { messages } from '../../common'; // Assuming messages is an object containing your message strings
-import TokenHistoryModel from '../tokenHistory.model';
+import usersToken from '../../usersToken/userToken.model';
+import accessLogsModel from '../../accessLogs/access.logs.model';
 
 jest.mock('../../user/user.model'); // Mock the UserModel
-jest.mock('../tokenHistory.model'); // Mock the TokenHistoryModel
+jest.mock('../../usersToken/userToken.model'); // Mock the usersToken
+jest.mock('../../accessLogs/access.logs.model');
 jest.mock('bcrypt');
 jest.mock('jsonwebtoken');
 
@@ -52,20 +54,19 @@ describe('login function', () => {
     it('should return a token if the login is successful', async () => {
         (UserModel.findOne as jest.Mock).mockResolvedValue(user);
         (bcrypt.compareSync as jest.Mock).mockReturnValue(true);
-        const token = 'jwt-token';
-        (jwt.sign as jest.Mock).mockReturnValue(token);
+        (jwt.sign as jest.Mock).mockImplementation(() => 'valid-jwt-token');
+        (accessLogsModel.findOneAndUpdate as jest.Mock).mockResolvedValue(undefined);
 
         const result = await authService.login(email, password, ip, loginPlatform);
-        console.log('result9999', result);
 
         expect(result).toEqual({
             success: true,
-            token,
+            token: 'valid-jwt-token',
             message: messages.LOGIN_SUCCESSFULLY,
         });
     });
 
-    it('should return an error message if an error occurs', async () => {
+    it('should return an error message if an error occurs during login', async () => {
         const errorMessage = 'Database error';
         (UserModel.findOne as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
@@ -77,6 +78,22 @@ describe('login function', () => {
             message: errorMessage,
         });
     });
+
+    // it('should handle the case when accessLogsModel.findOneAndUpdate throws an error', async () => {
+    //     const errorMessage = 'Database error';
+    //     (UserModel.findOne as jest.Mock).mockResolvedValue(user);
+    //     (bcrypt.compareSync as jest.Mock).mockReturnValue(true);
+    //     (jwt.sign as jest.Mock).mockReturnValue('jwt-token');
+    //     (accessLogsModel.findOneAndUpdate as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+    //     const result = await authService.login(email, password, ip, loginPlatform);
+
+    //     expect(result).toEqual({
+    //         success: false,
+    //         error: expect.any(Error),
+    //         message: errorMessage,
+    //     });
+    // });
 });
 
 describe('forgotPassword function', () => {
@@ -301,18 +318,18 @@ describe('markTokenAsInvalid function', () => {
     });
 
     it('should successfully mark the token as invalid', async () => {
-        (TokenHistoryModel.create as jest.Mock).mockResolvedValue({});
+        (usersToken.create as jest.Mock).mockResolvedValue({});
 
         const result = await authService.markTokenAsInvalid(token);
 
-        expect(TokenHistoryModel.create).toHaveBeenCalledWith({ token });
+        expect(usersToken.create).toHaveBeenCalledWith({ token });
         // Since the function does not return anything on success, we just ensure no errors are thrown
         expect(result).toBeUndefined();
     });
 
     it('should return an error message if an error occurs', async () => {
         const errorMessage = 'Database error';
-        (TokenHistoryModel.create as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (usersToken.create as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
         const result = await authService.markTokenAsInvalid(token);
 

@@ -5,7 +5,7 @@ $secondary: #3b024f;
 
 $bg-100: #faf6f6;
 
-$gray-100: #f3f4f8;
+$gray-100: #F8F8FF;
 $gray-200: #f3f4f8;
 $gray-300: #d2d4da;
 $gray-400: #b3b5bd;
@@ -31,3 +31,7 @@ $success-300: #067503;
 $danger-100: #fff8f8;
 $danger-200: #e73434;
 $danger-300: #ae1616;
+
+.gray-600 {
+  color: $gray-600;
+}

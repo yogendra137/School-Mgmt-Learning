@@ -5,6 +5,9 @@ interface UserModelInterface {
     mobileNo: string;
     password: string;
     location: object;
+    city: string;
+    state: string;
+    country: string;
     license: string;
     isActive: boolean;
     profilePic: string;
@@ -23,6 +26,7 @@ interface AddUserInterface {
         mobileNo: string;
         password: string;
         userType: string;
+        SchoolID: string;
         haveSkills: string[];
         createdBy: string;
         updatedBy: string;

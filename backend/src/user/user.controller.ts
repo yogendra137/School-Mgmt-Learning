@@ -1,37 +1,65 @@
 import { NextFunction, Request, Response } from 'express';
 import userService from './user.service';
 import HTTPStatus from '../config/statusCode';
+/**
+ * This controller for add user
+ * @param req
+ * @param res
+ */
 
 const addUser = async (req: Request, res: Response) => {
     try {
         const response: any = await userService.addUser(req);
         if (response) {
             const { message, status, token } = response;
-            res.status(200).json({ message, status, token });
+            res.status(status).json({ message, status, token });
         }
     } catch (error: any) {
         res.status(401).json({ error: error.message });
     }
 };
-
+/**
+ * This controller is for delete user
+ * @param req
+ * @param res
+ * @param next
+ * @returns
+ */
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // const { id } = req.params;
-        // console.log('......', req.user);
-        // return 0;
         const result = await userService.deleteUser(req);
         console.log('result', result);
-        if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
-        res.status(HTTPStatus.NOT_FOUND).json({ ...result });
+        if (result) {
+            const { message, status } = result;
+            res.status(200).json({ message, status });
+        }
     } catch (error) {
         next(error);
     }
 };
-
+/**
+ * This controller for change the status of user
+ * @param req
+ * @param res
+ * @param next
+ * @returns
+ */
 const changeUserStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id, status } = req.params;
-        const result = await userService.changeUserStatus(id, Boolean(status));
+        const {
+            params: { id },
+            query: { status },
+        } = req;
+        const { user }: any = req;
+        let booleanStatus;
+        if (status === '0') {
+            booleanStatus = false;
+        } else if (status === '1') {
+            booleanStatus = true;
+        } else {
+            throw new Error("Invalid status value. Expected '0' or '1'.");
+        }
+        const result = await userService.changeUserStatus(id, booleanStatus, user);
         if (result?.success) return res.status(HTTPStatus.OK).json({ ...result });
         res.status(HTTPStatus.NOT_FOUND).json({ ...result });
     } catch (error) {
@@ -39,4 +67,17 @@ const changeUserStatus = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
-export default { addUser, changeUserStatus, deleteUser };
+const userList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { query } = req;
+        const { user }: any = req;
+        const result = await userService.userList(query, user);
+        if (result) {
+            const { message, status, list } = result;
+            res.status(typeof status === 'number' ? status : 200).json({ message, status, list });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+export default { addUser, changeUserStatus, deleteUser, userList };

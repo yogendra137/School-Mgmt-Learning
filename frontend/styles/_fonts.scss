@@ -2,7 +2,9 @@
 
 $font-family-default: 'Roboto', sans-serif;
 $font-size-default: 14px;
-
+$font-size-md: $font-size-default + 2px;
+$font-size-lg: $font-size-md + 5px;
+$font-size-xl: $font-size-lg + 9px;
 $font-100:100;
 $font-200:200;
 $font-300:300;
