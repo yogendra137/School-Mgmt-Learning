@@ -1,6 +1,7 @@
 // auth.ts: Handle Authentication Logic
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { authRedirection } from './routeConfig';
 
 export function checkAuthentication(
 	req: NextRequest,
@@ -20,7 +21,7 @@ export function checkAuthentication(
 		return NextResponse.redirect(new URL('/login', req.nextUrl));
 	}
 
-	if (isPublicRoute && cookie && ['/login', '/signup'].includes(path)) {
+	if (isPublicRoute && cookie && authRedirection.includes(path)) {
 		return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
 	}
 
