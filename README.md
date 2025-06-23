@@ -1,7 +1,7 @@
 # ICU2 Foundation
 
 ## Overview
-The ICU2 foundation app is a comprehensive web application designed to help the ICU2 Foundation manage medical testing Boot Camps. The system allows Super Admins to have complete control over the setup and management of Boot Camps, which can be associated with specific schools and include various personnel such as project coordinators, medical professionals, and volunteers. The platform aims to provide real-time insights and detailed reports, facilitating efficient management and analysis of Boot Camp activities.
+The system allows Super Admins to have complete control over the setup and management of Boot Camps, which can be associated with specific schools and include various personnel such as project coordinators, medical professionals, and volunteers. The platform aims to provide real-time insights and detailed reports, facilitating efficient management and analysis of Boot Camp activities.
 
 ## Technologies Used
 
@@ -21,7 +21,7 @@ The ICU2 foundation app is a comprehensive web application designed to help the 
 The project repository is structured to include both the frontend and backend codebases.
 
 ```
-icu2-project/
+project/
 ├── frontend/
 │   ├── pages/
 │   ├── components/
@@ -64,7 +64,7 @@ icu2-project/
 ```
 
 ### Frontend (Next.js)
-The frontend of the ICU2 project is built using Next.js, a React-based framework for building server-side rendered (SSR) and statically generated applications.
+The frontend of the project is built using Next.js, a React-based framework for building server-side rendered (SSR) and statically generated applications.
 
 #### Key Directories
 - `/frontend/pages`: Contains the Next.js pages.
@@ -76,68 +76,21 @@ The frontend of the ICU2 project is built using Next.js, a React-based framework
 #### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Chapter247IND/icu2-foundation.git
+   git clone https://github.com/yogendra137/School-Mgmt-Learning.git
    ```
-2. Navigate to the frontend directory:
-   ```bash
-   cd icu2-foundation/frontend
-   ```
-3. Install dependencies:
+
+2. Install dependencies:
    ```bash
    npm install
    ```
-4. Run the development server:
+3. Run the development server:
    ```bash
    npm run dev
    ```
-5. Run unit tests:
+4. Run unit tests:
    ```bash
    npm test
    ```
 
 ### Backend (Node.js + TypeScript + Express)
 The backend is developed using Node.js with Express, written in TypeScript for improved type safety and maintainability. MongoDB is used as the database to store application data.
-
-
-#### Setup
-1. Clone the repository (if not done already):
-   ```bash
-   git clone https://github.com/Chapter247IND/icu2-foundation.git
-   ```
-2. Navigate to the backend directory:
-   ```bash
-   cd icu2-foundation/backend
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Set up environment variables:
-   Create a `.env` file in the `backend` directory and add the following variables:
-   ```env
-   MONGODB_URI=your-mongodb-connection-string
-   PORT=your-port
-   ```
-5. Run the development server:
-   ```bash
-   npm run dev
-   ```
-6. Run unit tests:
-   ```bash
-   npm test
-   ```
-
-## Features
-- **Super Admin Control:** Manage users, define tests, and create Boot Camps.
-- **Boot Camp Management:** Link Boot Camps to specific schools and assign personnel.
-
-
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
-## Contact
-For any inquiries or support, please contact the project maintainers.
-
----
-# Thank You
